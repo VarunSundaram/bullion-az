@@ -46,6 +46,11 @@ jobs:
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
+    - name: Create and start virtual environment
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+
     - name: 'Resolve Project Dependencies Using Pip'
       shell: bash
       run: |
