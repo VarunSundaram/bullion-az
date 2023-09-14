@@ -19,6 +19,8 @@ def calculateBB(kite):
     basecandles = 164
     previousDay,currentDay = getDays(basecandles)
     script = 0
+    lstGoodInstruments = []
+    lstInstruments = []
     for inst in instruments:
         script += 1
 
@@ -57,28 +59,36 @@ def calculateBB(kite):
 
         if low < 2 and (len(lstVolume) - 1) > 0:
             momVolume = sum(lstVolume) / (len(lstVolume) - 1)
-            if len(lstVolume) > 5 and momVolume > (volume * 1.3):
-                print ("This instrument is in good uptrend " + str(script) + " : " + inst["tradingsymbol"])
-            if len(lstVolume) > 5 and momVolume > (volume * 1.1):
-                print ("This instrument is in uptrend " + str(script) + " : " + inst["tradingsymbol"])
-            else:
-                print ("This instrument is in not in good volume " + str(script) + " : " + inst["tradingsymbol"])
-        
+            if len(lstVolume) > 6 and momVolume > (volume * 1.3):
+                lstGoodInstruments.append(inst)
+            elif len(lstVolume) > 4 and momVolume > (volume * 1.1):
+                lstInstruments.append(inst)
+            #else:
+            #    print ("This instrument is in not in good volume " + str(script) + " : " + inst["tradingsymbol"])
+
+    for inst in lstGoodInstruments:
+        print ("This instrument is in good uptrend : " + inst["tradingsymbol"])
+    for inst in lstInstruments:
+        print ("This instrument is in uptrend : " + inst["tradingsymbol"])
 
 def getVolume(dayHistory, basecounter=20):
 
     lstVolume = { 0 }
     counter = 0
+    notrade = 0
     volume = 0
     for candle in reversed(dayHistory):
         volume = volume + candle["volume"]
         if (candle["close"] > candle["open"]):
             lstVolume.add(candle["volume"])
+        if (candle["close"] == candle["open"]):
+            notrade += 1
         counter += 1
         if counter == basecounter:
             break
     volume = volume / basecounter
-
+    if notrade > 3:
+        lstVolume = { 0 }
     return volume, lstVolume
 
 def getMiddle30BBOf(dayHistory, basecandles = 20):

@@ -23,6 +23,6 @@ class Constants:
     # Get the directory where this python script is being executed
     HERE = os.path.dirname(__file__)
 
-    CONFIG_PATH = HERE + "\.vscode"
+    CONFIG_PATH = HERE + "\..\.vscode"
 
 
