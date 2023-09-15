@@ -57,11 +57,6 @@ jobs:
         pwd
         pushd '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         ls -l
-        cd ..
-        ls -l
-        cd .github/workflows
-        pushd '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/../.github/workflows/'
-        pwd
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         popd
