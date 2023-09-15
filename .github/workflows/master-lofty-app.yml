@@ -55,7 +55,9 @@ jobs:
       shell: bash
       run: |
         pwd
-        pushd '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/../.github/workflows'
+        pushd '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        pwd
+        pushd '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/../.github/workflows/'
         pwd
         python -m pip install --upgrade pip
         pip install -r requirements.txt
