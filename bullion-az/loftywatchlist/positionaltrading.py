@@ -205,36 +205,42 @@ def generate_access_token(config,request_token):
     print ("Automatic login for "+data["user_name"]+" is done. "+Constants.ACCESS+" has been written to disk")
     return kite
 
-if __name__ == "__main__":
-    # Initialize logging framework
-    # init_logging()
+def mainFunction():
+    flag = False
+    if flag:
+        # Initialize logging framework
+        # init_logging()
 
-    # Load the kite configuration information
-    kite_config = load_kite_config()
-    generate_token,login_time = need_to_generate_token()
+        # Load the kite configuration information
+        kite_config = load_kite_config()
+        generate_token,login_time = need_to_generate_token()
 
-    if generate_token :
-        sess = requests.Session()
+        if generate_token :
+            sess = requests.Session()
 
-        # Attempt pre-login
-        ref_url = kite_prelogin(config=kite_config, http_session=sess)
+            # Attempt pre-login
+            ref_url = kite_prelogin(config=kite_config, http_session=sess)
 
-        # Attempt a login and get the response as a dictionary
-        user_pass_login_resp = login_kite(config=kite_config, http_session=sess)
-        print ("Login successful!")
+            # Attempt a login and get the response as a dictionary
+            user_pass_login_resp = login_kite(config=kite_config, http_session=sess)
+            print ("Login successful!")
 
-        # Attempt two-factor auth
-        two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
-        #LOGGER.info("Two-factor authentication passed!", extra=two_fa_resp)
-        request_token = kite_post_twofa(url=ref_url,http_session=sess)
-        print ("Generated request token = %s",str(request_token))
+            # Attempt two-factor auth
+            two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
+            #LOGGER.info("Two-factor authentication passed!", extra=two_fa_resp)
+            request_token = kite_post_twofa(url=ref_url,http_session=sess)
+            print ("Generated request token = %s",str(request_token))
 
-        kite = generate_access_token(kite_config,request_token)
+            kite = generate_access_token(kite_config,request_token)
+            
+        else:
+            print ("Access token is valid till next day 7 am from "+str(login_time))
         
+        kite = kite_session()
+        bd.calculateBB(kite)
     else:
-        print ("Access token is valid till next day 7 am from "+str(login_time))
-    
-    kite = kite_session()
-    bd.calculateBB(kite)
-        
+        print ("how to add this to azure functions")
+
+if __name__ == "__main__":
+    mainFunction()
 

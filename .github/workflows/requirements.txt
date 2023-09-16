@@ -4,7 +4,7 @@
 #
 #    pip-compile
 #
-logmatic
+# logmatic
 
 requests
 
@@ -13,3 +13,11 @@ kiteconnect
 pyotp
 
 db
+
+azure-functions
+
+azure-functions-worker
+
+# grpcio~=1.20.1
+
+# grpcio-tools~=1.20.1
