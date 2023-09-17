@@ -14,6 +14,9 @@
             "justMyCode": true,
             "console": "integratedTerminal",
             "purpose": ["debug-test"],
+            "cwd": "${workspaceFolder}/bullion-az/",
+            "module": "loftywatchlist",
+            "env": {"PYTHONPATH": "${workspaceRoot}"}
         },
         {
             "name": "Attach to Python Functions",
@@ -22,7 +25,15 @@
             "port": 9091,
             "justMyCode": true,
             "preLaunchTask": "func: host start",
-            
+            "host": "localhost",
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/bullion-az",
+                    "remoteRoot": ".",
+                    "module": "loftywatchlist",
+                    "env": {"PYTHONPATH": "${workspaceRoot}"},
+                }
+            ]
         }
 
     ]

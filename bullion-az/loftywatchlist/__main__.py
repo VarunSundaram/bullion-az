@@ -27,5 +27,5 @@ def main(mytimer: func.TimerRequest) -> None:
 
     positionaltrading.mainFunction()
 
-if __name__ == "__main__":
-    positionaltrading.mainFunction()
+#if __name__ == "__main__":
+#    positionaltrading.mainFunction()

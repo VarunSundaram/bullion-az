@@ -9,15 +9,16 @@ from http import HTTPStatus
 import json
 #import logmatic
 import logging
-import requests #pip._vendor.
+import pip._vendor.requests #pip._vendor.
 import re
 import os
 
+from datetime import datetime
 import pyotp
+from kiteconnect import KiteConnect
 from . import Constants #(relative)
 from . import BollingerData as bd
-from datetime import datetime
-from kiteconnect import KiteConnect
+
 
 #from datetime import date, timedelta
 
@@ -220,7 +221,7 @@ def mainFunction():
         generate_token,login_time = need_to_generate_token()
 
         if generate_token :
-            sess = requests.Session()
+            sess = pip._vendor.requests.Session()
 
             # Attempt pre-login
             ref_url = kite_prelogin(config=kite_config, http_session=sess)

@@ -5,13 +5,13 @@
 #    pip-compile
 #
 # logmatic
+
 wheel
 python-docx
 openai==0.27.2
 python-dotenv==1.0.0
 pyyaml==6.0
 readability-lxml==0.8.1
-
 gTTS==2.3.1
 google-api-python-client
 pinecone-client==2.2.1
@@ -19,6 +19,7 @@ pymilvus
 redis
 orjson
 Pillow
+cython
 coverage
 flake8
 sentence_transformers
@@ -40,6 +41,7 @@ pyotp
 
 db
 
-datetime
-
 azure-functions
+
+git+https://github.com/Azure/azure-functions-python-worker@dev
+

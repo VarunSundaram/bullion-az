@@ -7,27 +7,72 @@
 			"command": "host start",
 			"problemMatcher": "$func-python-watch",
 			"isBackground": true,
-			"dependsOn": "pip install (functions)",
+			"dependsOn": "install azure function workers",
 			"options": {
 				"cwd": "${workspaceFolder}/bullion-az"
 			}
 		},
 		{
-			"label": "pip install (functions)",
+			"label": "install azure function workers",
 			"type": "shell",
-			"osx": {
-				"command": "${config:azureFunctions.pythonVenv}/bin/python -m pip install -r ../requirements.txt"
-			},
-			"windows": {
-				"command": "pip install -r ../.github/workflows/requirements.txt"
-			},
-			"linux": {
-				"command": "${config:azureFunctions.pythonVenv}/bin/python -m pip install -r requirements.txt"
-			},
+			"dependsOn": "install azure functions",
 			"problemMatcher": [],
-			"options": {
-				"cwd": "${workspaceFolder}/bullion-az"
-			}
+			"command": "pip install git+https://github.com/Azure/azure-functions-python-worker@dev"
+		},
+		{
+			"label": "install azure functions",
+			"type": "shell",
+			"dependsOn": "install datetime",
+			"problemMatcher": [],
+			"command": "pip install azure-functions"
+		},
+		{
+			"label": "install datetime",
+			"type": "shell",
+			"dependsOn": "install requests",
+			"problemMatcher": [],
+			"command": "pip install datetime"
+		},
+		{
+			"label": "install requests",
+			"type": "shell",
+			"dependsOn": "install db",
+			"command": "pip install requests",
+			"problemMatcher": []
+		},
+		{
+			"label": "install db",
+			"type": "shell",
+			"dependsOn": "install pyotp",
+			"command": "pip install db",
+			"problemMatcher": []
+		},
+		{
+			"label": "install pyotp",
+			"type": "shell",
+			"problemMatcher": [],
+			"dependsOn": "install kite connect",
+			"command": "pip install pyotp"
+		},
+		{
+			"label": "install kite connect",
+			"type": "shell",
+			"problemMatcher": [],
+			"dependsOn": "install logging",
+			"command": "pip install kiteconnect"
+		},
+		{
+			"label": "install logging",
+			"type": "shell",
+			"problemMatcher": [],
+			"dependsOn": "activate virtual environment",
+			"command": "pip install logging"
+		},
+		{
+			"label": "activate virtual environment",
+			"type": "shell",
+			"problemMatcher": [],
+			"command": "pip install --upgrade pip"
 		}
 	]
 }
