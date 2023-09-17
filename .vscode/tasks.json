@@ -7,7 +7,7 @@
 			"command": "host start",
 			"problemMatcher": "$func-python-watch",
 			"isBackground": true,
-			"dependsOn": "install azure function workers",
+			"dependsOn": "install azure functions",
 			"options": {
 				"cwd": "${workspaceFolder}/bullion-az"
 			}

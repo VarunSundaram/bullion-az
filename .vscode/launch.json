@@ -32,6 +32,7 @@
                     "remoteRoot": ".",
                     "module": "loftywatchlist",
                     "env": {"PYTHONPATH": "${workspaceRoot}"},
+                    "purpose": ["debug-test"]
                 }
             ]
         }
