@@ -21,7 +21,8 @@
             "request": "attach",
             "port": 9091,
             "justMyCode": true,
-            "preLaunchTask": "func: host start",            
+            "preLaunchTask": "func: host start",
+            
         }
 
     ]
