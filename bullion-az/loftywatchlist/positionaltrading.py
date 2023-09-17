@@ -1,21 +1,25 @@
 # -*- coding: utf-8 -*-
-import json
-import logmatic
-import logging
-import requests
-from http import HTTPStatus
-import re
-from kiteconnect import KiteConnect
+import sys
 import os
-import datetime
-import math
 
-import json, pyotp
-from urllib.parse import urlparse
-from urllib.parse import parse_qs
-from Constants import Constants
-import BollingerData as bd
-from datetime import date, datetime, timedelta
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
+from http import HTTPStatus
+import json
+#import logmatic
+import logging
+import requests #pip._vendor.
+import re
+import os
+
+import pyotp
+from . import Constants #(relative)
+from . import BollingerData as bd
+from datetime import datetime
+from kiteconnect import KiteConnect
+
+#from datetime import date, timedelta
 
 __author__ = "Varun kumar Sundaram"
 
@@ -239,8 +243,8 @@ def mainFunction():
         kite = kite_session()
         bd.calculateBB(kite)
     else:
-        print ("how to add this to azure functions")
+        logging.info ("how to add this to azure functions")
 
-if __name__ == "__main__":
-    mainFunction()
+#if __name__ == "__main__":
+#    mainFunction()
 

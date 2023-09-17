@@ -1,3 +1,9 @@
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
@@ -5,7 +11,7 @@ from kiteconnect import KiteConnect
 import os
 import json
 import math
-from Constants import Constants
+from . import Constants
 
 def getDays (days=15):
     previousDay = date.today() - timedelta(days=days)
