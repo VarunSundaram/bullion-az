@@ -1,0 +1,27 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+      "package_formatter": {
+        "format": "[%(asctime)s] - [%(levelname)s] - [%(name)s] : %(message)s"
+      },
+      "json": {
+        "()": "logmatic.JsonFormatter"
+      }
+    },
+    "handlers": {
+      "console": {
+        "class": "logging.StreamHandler",
+        "level": "DEBUG",
+        "formatter": "json"
+      }
+    },
+    "loggers": {
+    },
+    "root": {
+      "level": "INFO",
+      "handlers": [
+        "console"
+      ]
+    }
+  }

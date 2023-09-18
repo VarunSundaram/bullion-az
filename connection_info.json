@@ -1,0 +1,11 @@
+{
+    "KITE_API_KEY": "2cpnkogtmjvn8v9f",
+    "USER": "YV0890",
+    "PASSWORD": "Juliet#3",
+    "PIN": "HL3AABEKLZ7RKTRFUVINNJDKPTF4MU6X",
+    "KITE_API_SECRET":"sf5la8clokd8nmqsca59qclq3dq5h3fz",
+    "LOGIN_REFERER": "https://kite.trade/connect/login?v=3&api_key=",
+    "LOGIN_URL": "https://kite.zerodha.com/api/login",
+    "TWOFA_URL": "https://kite.zerodha.com/api/twofa"
+    
+  }
