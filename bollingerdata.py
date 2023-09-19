@@ -24,6 +24,13 @@ def calculateBB(kite):
     lstInstruments = []
     ohlc = []
     start = datetime.now()
+    day = datetime.now().day
+    if (day % 2) == 0:
+        print("{0} is Even".format(day))
+    else:
+        print("{0} is Odd".format(day))
+        instruments = reversed(instruments)
+    
     for inst in instruments:
         script += 1
 
