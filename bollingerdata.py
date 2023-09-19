@@ -23,6 +23,7 @@ def calculateBB(kite):
     lstGoodInstruments = []
     lstInstruments = []
     ohlc = []
+    start = datetime.now()
     for inst in instruments:
         script += 1
 
@@ -72,6 +73,14 @@ def calculateBB(kite):
             #else:
             #    print ("This instrument is in not in good volume " + str(script) + " : " + inst["tradingsymbol"])
 
+        stop = datetime.now()
+        elapsed = stop - start
+
+        if elapsed > timedelta(minutes=8):
+            print (start)
+            print (stop)
+            print ("Slept for > 1 minute")
+            break
     #for inst in lstGoodInstruments:
     #    print ("This instrument is in good uptrend : " + inst["tradingsymbol"])
     #for inst in lstInstruments:
