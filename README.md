@@ -1,3 +1,7 @@
+# bullion-az
+
+azure functions demo
+
 Positional Trading is connecting to Kite to give us good trending scripts
 
 Stock Market Trading is strictly not advised
