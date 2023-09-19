@@ -77,9 +77,7 @@ def calculateBB(kite):
         elapsed = stop - start
 
         if elapsed > timedelta(minutes=8):
-            print (start)
-            print (stop)
-            print ("Slept for > 1 minute")
+            print ("Slept for > 8 minute")
             break
     #for inst in lstGoodInstruments:
     #    print ("This instrument is in good uptrend : " + inst["tradingsymbol"])
