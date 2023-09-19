@@ -13,3 +13,5 @@ requests
 datetime
 
 db
+
+azure-communication-email

@@ -10,7 +10,7 @@ from datetime import datetime
 import pyotp
 from kiteconnect import KiteConnect
 import constants #(relative)
-
+import bollingerdata as bd
 
 __author__ = "Varun kumar Sundaram"
 
@@ -232,7 +232,8 @@ def startSession():
             print ("Access token is valid till next day 7 am from "+str(login_time))
         
         kite = kite_session()
-        #bd.calculateBB(kite)
+        bd.calculateBB(kite)
+        
     else:
         logging.info ("how to add this to azure functions")
 
