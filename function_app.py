@@ -5,7 +5,7 @@ import positionaltrade as ps
 
 app = func.FunctionApp()
 
-@app.schedule(schedule="0 45 14 * * *", arg_name="myTimer", run_on_startup=True,
+@app.schedule(schedule="0 10 15 * * *", arg_name="myTimer", run_on_startup=True,
               use_monitor=False) 
 def loftypts(myTimer: func.TimerRequest) -> None:
     utc_timestamp = datetime.datetime.utcnow().replace(
