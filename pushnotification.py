@@ -1,5 +1,5 @@
 from azure.communication.email import EmailClient
-from kiteconnect import KiteConnect as kc
+
 
 def sendemail(lstGoodInstruments, bull=True):
     try:
