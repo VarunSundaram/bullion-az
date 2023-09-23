@@ -16,6 +16,6 @@ db
 
 azure-communication-email
 
-azure-storage-blob
+#azure-storage-blob
 
-azure-identity
+#azure-identity
