@@ -128,6 +128,9 @@ obj
 appsettings.json
 local.settings.json
 
+# lofty functions artifacts
+access_credentials.json
+
 # Azurite artifacts
 __blobstorage__
 __queuestorage__

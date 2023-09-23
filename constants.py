@@ -1,4 +1,5 @@
 import os
+import tempfile
 
 # TODO: These can be passed in as command line arguments. Make this change later!
 
@@ -21,5 +22,5 @@ class constants:
     ACCESS = "access_credentials.json"
     
     # Get the directory where this python script is being executed
-    HERE = os.path.dirname(__file__)
+    TEMPHERE = tempfile.gettempdir()
     
