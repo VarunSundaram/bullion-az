@@ -6,7 +6,7 @@ from kiteconnect import KiteConnect
 import os
 import json
 import math
-import pushnotification as pn
+import utilities as pn
 
 def getDays (days=15):
     previousDay = date.today() - timedelta(days=days)

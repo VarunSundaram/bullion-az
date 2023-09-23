@@ -3,12 +3,8 @@ import tempfile
 
 # TODO: These can be passed in as command line arguments. Make this change later!
 
-LOG_FILE_NAME = "logging.json"
-
-CONNECTION_INFO_FILE_NAME = "connection_info.json"
-
 class constants:
-
+    
     # Name of file containing app configuration information
     CONNECTION_INFO_FILE_NAME = "connection_info.json"
     
@@ -23,5 +19,5 @@ class constants:
     
     # Get the directory where this python script is being executed
     TEMPHERE = tempfile.gettempdir()
-    
-print (constants.TEMPHERE)
+
+#print ("Temporary folder access data json is stored :" + constants.TEMPHERE)
