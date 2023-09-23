@@ -24,3 +24,4 @@ class constants:
     # Get the directory where this python script is being executed
     TEMPHERE = tempfile.gettempdir()
     
+print (constants.TEMPHERE)
