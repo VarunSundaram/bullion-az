@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 import pyotp
 from kiteconnect import KiteConnect
-import constants #(relative)
+from constants import constants #(relative)
 import bollingerdata as bd
 
 __author__ = "Varun kumar Sundaram"
@@ -22,7 +22,7 @@ def load_kite_config():
     :return: A python dictionary
     :rtype: dict
     """
-    connect_fp = os.path.join(constants.constants.HERE, constants.CONNECTION_INFO_FILE_NAME)
+    connect_fp = os.path.join(constants.HERE, constants.CONNECTION_INFO_FILE_NAME)
 
     if not os.path.exists(connect_fp):
         raise FileNotFoundError("Connection information file not found!")
@@ -36,10 +36,10 @@ def load_kite_config():
 
 def need_to_generate_token():
     flag = False
-    fp = os.path.join(constants.constants.HERE, constants.constants.ACCESS)
+    fp = os.path.join(constants.HERE + '/tmp/', constants.ACCESS)
     login_time=''
     if os.path.isfile(fp):
-        print (constants.constants.ACCESS + " present in current folder")
+        print (constants.ACCESS + " present in current folder")
         with open(fp, 'r') as f:
             data = json.load(f)
         print ("Previous login time for "+data["user_name"]+" is "+str(data["login_time"]))
@@ -50,10 +50,10 @@ def need_to_generate_token():
             print ("Acces token is fresh")
         else:
             os.remove(fp)
-            print (constants.constants.ACCESS+" has been deleted.")
+            print (constants.ACCESS+" has been deleted.")
             flag=True
     else:
-        print (constants.constants.ACCESS+" does not exist in current folder")
+        print (constants.ACCESS+" does not exist in current folder")
         flag = True
     return flag,login_time
 
@@ -63,7 +63,7 @@ def kite_session():
     :return: KiteConnect instance
     :rtype: kiteconnect
     """
-    fp = os.path.join(constants.constants.HERE, constants.constants.ACCESS)
+    fp = os.path.join(constants.HERE + '/tmp/', constants.ACCESS)
     with open(fp, 'r') as f:
             data = json.load(f)
     
@@ -182,7 +182,7 @@ def kite_post_twofa(url,  http_session):
     return request_token
 
 def generate_access_token(config,request_token):
-    fp = os.path.join(constants.constants.HERE, constants.constants.ACCESS)
+    fp = os.path.join(constants.HERE + '/tmp/', constants.ACCESS)
     kite = KiteConnect(api_key=config["KITE_API_KEY"])
     data = kite.generate_session(request_token, api_secret=config["KITE_API_SECRET"])
     if "request_token" in data.keys():
@@ -197,7 +197,7 @@ def generate_access_token(config,request_token):
         outfile.write(user_data)
     #time.sleep(5)
     kite.set_access_token(data["access_token"])
-    print ("Automatic login for "+data["user_name"]+" is done. "+constants.constants.ACCESS+" has been written to disk")
+    print ("Automatic login for "+data["user_name"]+" is done. "+constants.ACCESS+" has been written to disk")
     return kite
 
 def startSession():
