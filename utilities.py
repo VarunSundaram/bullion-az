@@ -1,5 +1,6 @@
 from azure.communication.email import EmailClient
 import os
+from constants import constants
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
@@ -42,7 +43,7 @@ def sendemail(lstGoodInstruments, bull=True):
 def connecttoaz():
     container_name = "lofty-cloud-blobs"
     local_file_name = "access_credentials.json"
-    upload_file_path = os.path.join(os.path.dirname(__file__), local_file_name)
+    upload_file_path = os.path.join(constants.TEMPHERE, local_file_name)
     
     account_url = "https://bulionbucket.blob.core.windows.net"
     default_credential = DefaultAzureCredential()
@@ -60,5 +61,4 @@ def connecttoaz():
     with open(file=upload_file_path, mode="rb") as data:
         blob_client.upload_blob(data)
 
-#instrument = { "token_name":"INFY", "close": 1350, "mbb": 1352}
-#sendemail(instrument)
+#connecttoaz()

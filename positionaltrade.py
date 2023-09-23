@@ -39,7 +39,7 @@ def need_to_generate_token():
     fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
     login_time=''
     if os.path.isfile(fp):
-        print (constants.ACCESS + " present in current folder")
+        print (constants.ACCESS + " present in temporary folder")
         with open(fp, 'r') as f:
             data = json.load(f)
         print ("Previous login time for "+data["user_name"]+" is "+str(data["login_time"]))
