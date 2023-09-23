@@ -15,3 +15,7 @@ datetime
 db
 
 azure-communication-email
+
+azure-storage-blob
+
+azure-identity
