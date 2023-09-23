@@ -22,7 +22,7 @@ def load_kite_config():
     :return: A python dictionary
     :rtype: dict
     """
-    connect_fp = os.path.join(constants.HERE, constants.CONNECTION_INFO_FILE_NAME)
+    connect_fp = os.path.join(os.path.dirname(__file__), constants.CONNECTION_INFO_FILE_NAME)
 
     if not os.path.exists(connect_fp):
         raise FileNotFoundError("Connection information file not found!")
@@ -36,7 +36,7 @@ def load_kite_config():
 
 def need_to_generate_token():
     flag = False
-    fp = os.path.join(constants.HERE + '/tmp/', constants.ACCESS)
+    fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
     login_time=''
     if os.path.isfile(fp):
         print (constants.ACCESS + " present in current folder")
@@ -63,7 +63,7 @@ def kite_session():
     :return: KiteConnect instance
     :rtype: kiteconnect
     """
-    fp = os.path.join(constants.HERE + '/tmp/', constants.ACCESS)
+    fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
     with open(fp, 'r') as f:
             data = json.load(f)
     
@@ -182,7 +182,7 @@ def kite_post_twofa(url,  http_session):
     return request_token
 
 def generate_access_token(config,request_token):
-    fp = os.path.join(constants.HERE + '/tmp/', constants.ACCESS)
+    fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
     kite = KiteConnect(api_key=config["KITE_API_KEY"])
     data = kite.generate_session(request_token, api_secret=config["KITE_API_SECRET"])
     if "request_token" in data.keys():
