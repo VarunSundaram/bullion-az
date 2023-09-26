@@ -70,4 +70,34 @@ def uploadblob():
     with open(file=upload_file_path, mode="rb") as data:
         blob_client = container.upload_blob(name=local_file_name, data=data, overwrite=False)
  
+
+def download_blob():
+    #try:
+    container_name = "lofty-cloud-blobs"
+    local_file_name = "access_credentials.json"
+    download_file_path = os.path.join(constants.TEMPHERE, local_file_name)
+    STORAGEACCOUNTKEY = "wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg=="
+    
+    account_url = "https://bulionbucket.blob.core.windows.net/lofty-cloud-blobs/access_credentials.json"
+    connection_string = "DefaultEndpointsProtocol=https;AccountName=bulionbucket;AccountKey=wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg==;EndpointSuffix=core.windows.net"
+    ssl._create_default_https_context = ssl._create_unverified_context
+    
+    # Create the BlobServiceClient object
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+    
+    # Create the Blob Container object
+    container = blob_service_client.get_container_client(container=container_name)
+    
+    blob_client = container.get_blob_client(local_file_name)
+    
+    if (blob_client.exists()):
+        bytes = blob_client.download_blob().readall()
+        os.makedirs(os.path.dirname(download_file_path), exist_ok=True)
+        with open(download_file_path, "wb") as file:
+            file.write(bytes)
+    #except Exception as ex:
+    #        print ("Exception raised for blob as  here --" + str(ex))
+        
+    
 #uploadblob()
+#download_blob()
