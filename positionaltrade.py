@@ -232,6 +232,7 @@ def startSession():
             print ("Access token is valid till next day 7 am from "+str(login_time))
         
         kite = kite_session()
+        
         bd.calculateBB(kite)
         
     else:
