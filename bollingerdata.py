@@ -6,6 +6,7 @@ from kiteconnect import KiteConnect
 import os
 import json
 import math
+import utilities as ut
 
 def getDays (days=15):
     previousDay = date.today() - timedelta(days=days)
