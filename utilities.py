@@ -1,8 +1,9 @@
 from azure.communication.email import EmailClient
 import os
 from constants import constants
-from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+import ssl
+import requests
 
 def sendemail(lstGoodInstruments, bull=True):
     try:
@@ -40,25 +41,75 @@ def sendemail(lstGoodInstruments, bull=True):
         print (ex)
         return ex
 
-def connecttoaz():
+def uploadblob():
+    print (constants.TEMPHERE)
+    print(requests.certs.where())
+    #os.environ["HTTP_PROXY"] = "http://10.10.1.10:1180"
+    #os.environ["HTTPS_PROXY"] = "http://10.10.1.10:1180"
+
     container_name = "lofty-cloud-blobs"
     local_file_name = "access_credentials.json"
     upload_file_path = os.path.join(constants.TEMPHERE, local_file_name)
+    STORAGEACCOUNTKEY = "wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg=="
     
     account_url = "https://bulionbucket.blob.core.windows.net"
-    default_credential = DefaultAzureCredential()
+    connection_string = "DefaultEndpointsProtocol=https;AccountName=bulionbucket;AccountKey=wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg==;EndpointSuffix=core.windows.net"
+    ssl._create_default_https_context = ssl._create_unverified_context
+    # Create the BlobServiceClient object
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+    container = blob_service_client.get_container_client(container=container_name)
+    
+    #blob_client = container.get_blob_client(container, local_file_name)
     
     # Create the BlobServiceClient object
-    blob_service_client = BlobServiceClient(account_url, credential=default_credential)
+    #blob_client = BlobClient(account_url, container_name=container_name,
+    #        blob_name=local_file_name, credential=blob_service_client.credential)
+            #, proxies={ "https": "https://varunkumar.sundaram:asPire-12qwerty@10.10.1.10:1180" }
+    blob_client = blob_service_client.get_blob_client("https://bulionbucket.blob.core.windows.net/lofty-cloud-blobs"
+                                                    , blob=local_file_name)
     
-    # Create the container
-    container_client = blob_service_client.create_container(container_name)
-
-    # Create a blob client using the local file name as the name for the blob
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=local_file_name)
+    print (blob_client.blob_name)
+    # encoding param is necessary for readall() to return str, otherwise it returns bytes
+    downloader = blob_client.download_blob(max_concurrency=1, encoding='UTF-8')
+    blob_text = downloader.readall()
+    print("Blob contents: {blob_text}")
     
     # Upload the created file
     with open(file=upload_file_path, mode="rb") as data:
         blob_client.upload_blob(data)
 
-#connecttoaz()
+def downloadblob():
+    print (constants.TEMPHERE)
+    print(requests.certs.where())
+    #os.environ["HTTP_PROXY"] = "http://10.10.1.10:1180"
+    #os.environ["HTTPS_PROXY"] = "http://10.10.1.10:1180"
+
+    container_name = "lofty-cloud-blobs"
+    local_file_name = "access_credentials.json"
+    upload_file_path = os.path.join(constants.TEMPHERE, local_file_name)
+    STORAGEACCOUNTKEY = "wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg=="
+    
+    account_url = "https://bulionbucket.blob.core.windows.net"
+    connection_string = "DefaultEndpointsProtocol=https;AccountName=bulionbucket;AccountKey=wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg==;EndpointSuffix=core.windows.net"
+    ssl._create_default_https_context = ssl._create_unverified_context
+    # Create the BlobServiceClient object
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+    container = blob_service_client.get_container_client(container=container_name)
+
+    my_blobs = container.list_blobs()
+    
+    blob_client = container.get_blob_client(local_file_name)
+    with open(upload_file_path, "wb") as f:
+        data = blob_client.download_blob()
+        data.readinto(f)
+    
+    for blob in my_blobs:
+      print(blob.name)
+      bytes = container.get_blob_client(blob).download_blob().readall()
+      download_file_path = os.path.join(constants.TEMPHERE, blob.name)
+      # for nested blobs, create local path as well!
+      os.makedirs(os.path.dirname(download_file_path), exist_ok=True)
+      with open(download_file_path, "wb") as file:
+          file.write(bytes)
+
+uploadblob()

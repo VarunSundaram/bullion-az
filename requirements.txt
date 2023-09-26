@@ -19,3 +19,11 @@ azure-communication-email
 azure-storage-blob
 
 azure-identity
+
+pip-system-certs
+
+azure-cli
+
+azure-devops
+
+mlclient

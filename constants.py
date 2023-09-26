@@ -1,6 +1,6 @@
 import os
 import tempfile
-
+import requests
 # TODO: These can be passed in as command line arguments. Make this change later!
 
 class constants:
@@ -21,3 +21,4 @@ class constants:
     TEMPHERE = tempfile.gettempdir()
 
 #print ("Temporary folder access data json is stored :" + constants.TEMPHERE)
+

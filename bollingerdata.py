@@ -6,7 +6,7 @@ from kiteconnect import KiteConnect
 import os
 import json
 import math
-import utilities as pn
+import utilities as ut
 
 def getDays (days=15):
     previousDay = date.today() - timedelta(days=days)
@@ -16,6 +16,7 @@ def getDays (days=15):
     return previousDay.strftime("%Y-%m-%d"),currentDay.strftime("%Y-%m-%d")
 
 def calculateBB(kite):
+    ut.uploadblob()
     instruments = kite.instruments(kite.EXCHANGE_NSE)
     basecandles = 164
     previousDay,currentDay = getDays(basecandles)
@@ -83,7 +84,7 @@ def calculateBB(kite):
         stop = datetime.now()
         elapsed = stop - start
 
-        if elapsed > timedelta(minutes=8):
+        if elapsed >= timedelta(minutes=9):
             print ("Slept for > 8 minute")
             break
     #for inst in lstGoodInstruments:
@@ -91,7 +92,7 @@ def calculateBB(kite):
     #for inst in lstInstruments:
     #    print ("This instrument is in uptrend : " + inst["tradingsymbol"])
     
-    pn.sendemail(lstGoodInstruments)
+    ut.sendemail(lstGoodInstruments)
 
 def getVolume(dayHistory, basecounter=20):
 
