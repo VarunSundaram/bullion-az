@@ -69,6 +69,10 @@ def uploadblob():
                                                     # , blob=local_file_name)
     
     print (blob_client.blob_name)
+    
+    if (blob_client.exists()):
+        blob_client.delete_blob()
+    
     # Upload the created file
     with open(file=upload_file_path, mode="rb") as data:
         blob_client.upload_blob(data)
