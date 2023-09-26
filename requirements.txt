@@ -22,8 +22,8 @@ azure-identity
 
 pip-system-certs
 
-azure-cli
+#azure-cli
 
-azure-devops
+#azure-devops
 
-mlclient
+#mlclient
