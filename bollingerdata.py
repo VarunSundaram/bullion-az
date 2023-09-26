@@ -6,7 +6,6 @@ from kiteconnect import KiteConnect
 import os
 import json
 import math
-import utilities as ut
 
 def getDays (days=15):
     previousDay = date.today() - timedelta(days=days)
@@ -16,7 +15,6 @@ def getDays (days=15):
     return previousDay.strftime("%Y-%m-%d"),currentDay.strftime("%Y-%m-%d")
 
 def calculateBB(kite):
-    ut.uploadblob()
     instruments = kite.instruments(kite.EXCHANGE_NSE)
     basecandles = 164
     previousDay,currentDay = getDays(basecandles)

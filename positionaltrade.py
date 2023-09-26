@@ -11,6 +11,7 @@ import pyotp
 from kiteconnect import KiteConnect
 from constants import constants #(relative)
 import bollingerdata as bd
+import utilities as ut
 
 __author__ = "Varun kumar Sundaram"
 
@@ -35,6 +36,7 @@ def load_kite_config():
     return config
 
 def need_to_generate_token():
+    ut.downloadblob()
     flag = False
     fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
     login_time=''
@@ -227,7 +229,7 @@ def startSession():
             print ("Generated request token = %s",str(request_token))
 
             kite = generate_access_token(kite_config,request_token)
-            
+            ut.uploadblob()
         else:
             print ("Access token is valid till next day 7 am from "+str(login_time))
         
