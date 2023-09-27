@@ -36,7 +36,7 @@ def load_kite_config():
     return config
 
 def need_to_generate_token():
-    ut.downloadblob()
+    ut.download_blob()
     flag = False
     fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
     login_time=''
