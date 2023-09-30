@@ -4,8 +4,9 @@ from constants import constants
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import ssl
 import requests
+import json
 
-def sendemail(lstGoodInstruments, bull=True):
+def sendemail(lstGoodInstruments, lst_instruments, bull=True):
     try:
         connection_string = "endpoint=https://loftynotification.india.communication.azure.com/;accesskey=ewnfBfxcc73nqA+epomtCv9qabIjD5WS9oZV86KO44KfJVlqemVp7s268eyBUWUCuVW3Uz+TOm7m3Om6/CacZw=="
         client = EmailClient.from_connection_string(connection_string)
@@ -13,15 +14,21 @@ def sendemail(lstGoodInstruments, bull=True):
         subject = "Find data attached"
         
         body = ""
-        if (len(lstGoodInstruments) == 0):
+        if (len(lstGoodInstruments) == 0 and len(lst_instruments) == 0):
             subject = "instruments is  are not in specific trend"
             body = "empty or none list of instruments are found to be true"
         else:
             for inst in lstGoodInstruments:
                 if (bull):
-                    body = body + "BUY " + inst["tradingsymbol"] + " at CMP " + str(inst["last_price"]) + "\n"
+                    body = body + "good BUY " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
                 else:
-                    body = body + "SELL " + inst["tradingsymbol"] + " at CMP " + str(inst["last_price"]) + "\n"
+                    body = body + "good SELL " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
+            for inst in lst_instruments:
+                if (bull):
+                    body = body + "BUY " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
+                else:
+                    body = body + "SELL " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
+
 
         message = {
             "senderAddress": "DoNotReply@da760745-49f2-4ccf-8808-111916272d1a.azurecomm.net",
@@ -41,14 +48,15 @@ def sendemail(lstGoodInstruments, bull=True):
         print (ex)
         return ex
 
-def uploadblob():
+def uploadblob(local_file_name = "access_credentials.json"):
+    if ("22557" in str(constants.TEMPHERE)):
+        return
     print (constants.TEMPHERE)
     print(requests.certs.where())
     #os.environ["HTTP_PROXY"] = "http://10.10.1.10:1180"
     #os.environ["HTTPS_PROXY"] = "http://10.10.1.10:1180"
 
     container_name = "lofty-cloud-blobs"
-    local_file_name = "access_credentials.json"
     upload_file_path = os.path.join(constants.TEMPHERE, local_file_name)
     STORAGEACCOUNTKEY = "wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg=="
     
@@ -72,6 +80,8 @@ def uploadblob():
  
 
 def download_blob():
+    if ("22557" in str(constants.TEMPHERE)):
+        return
     #try:
     container_name = "lofty-cloud-blobs"
     local_file_name = "access_credentials.json"
@@ -98,6 +108,20 @@ def download_blob():
     #except Exception as ex:
     #        print ("Exception raised for blob as  here --" + str(ex))
         
+
+def upload_json(lstgoodinstruments, lst_instruments):
+    instrument_file_name = "instruments.json"
+    instrument_file_path = os.path.join(constants.TEMPHERE, instrument_file_name)
+    # Serializing json  
     
+    final_list = { "good buy" : lstgoodinstruments, "buy" : lst_instruments }
+    json_object = json.dumps(final_list, indent = 4) 
+    
+    # Writing to sample.json
+    with open(instrument_file_path, "w+") as outfile:
+        outfile.write(json_object)
+        
+    uploadblob()
+        
 #uploadblob()
 #download_blob()
