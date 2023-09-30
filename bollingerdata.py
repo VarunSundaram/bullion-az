@@ -164,9 +164,9 @@ def calculateBB(kite, exchange):
     #    print ("This instrument is in uptrend : " + inst["tradingsymbol"])
     
     if (exchange == kite.EXCHANGE_NFO):
-        ut.sendemail(lstGoodInstruments, lstInstruments)
+        ut.upload_json(lstGoodInstruments, lstInstruments)
     else:
-        ut.sendemail(lstGoodInstruments, lstInstruments)
+        ut.send_email(lstGoodInstruments, lstInstruments)
     
     return 0
 

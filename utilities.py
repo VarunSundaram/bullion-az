@@ -6,7 +6,7 @@ import ssl
 import requests
 import json
 
-def sendemail(lstGoodInstruments, lst_instruments, bull=True):
+def send_email(lstGoodInstruments, lst_instruments, bull=True):
     try:
         connection_string = "endpoint=https://loftynotification.india.communication.azure.com/;accesskey=ewnfBfxcc73nqA+epomtCv9qabIjD5WS9oZV86KO44KfJVlqemVp7s268eyBUWUCuVW3Uz+TOm7m3Om6/CacZw=="
         client = EmailClient.from_connection_string(connection_string)
@@ -48,7 +48,7 @@ def sendemail(lstGoodInstruments, lst_instruments, bull=True):
         print (ex)
         return ex
 
-def uploadblob(local_file_name = "access_credentials.json"):
+def upload_blob(local_file_name = "access_credentials.json"):
     if ("22557" in str(constants.TEMPHERE)):
         return
     print (constants.TEMPHERE)
@@ -121,7 +121,7 @@ def upload_json(lstgoodinstruments, lst_instruments):
     with open(instrument_file_path, "w+") as outfile:
         outfile.write(json_object)
         
-    uploadblob()
+    upload_blob(instrument_file_name)
         
 #uploadblob()
 #download_blob()
