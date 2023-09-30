@@ -202,7 +202,7 @@ def generate_access_token(config,request_token):
     print ("Automatic login for "+data["user_name"]+" is done. "+constants.ACCESS+" has been written to disk")
     return kite
 
-def startSession():
+def start_session():
     flag = True
     if flag:
         # Initialize logging framework
@@ -229,7 +229,7 @@ def startSession():
             print ("Generated request token = %s",str(request_token))
 
             kite = generate_access_token(kite_config,request_token)
-            ut.uploadblob()
+            ut.upload_blob()
         else:
             print ("Access token is valid till next day 7 am from "+str(login_time))
         
@@ -242,11 +242,11 @@ def startSession():
         
         exit_code = bd.calculateBB(kite, exchange)
         if exit_code == -1:
-            startSession()
+            start_session()
     else:
         logging.info ("how to add this to azure functions")
 
 
 if __name__ == "__main__":
-    startSession()
+    start_session()
     
