@@ -2,11 +2,11 @@ from http import HTTPStatus
 import json
 #import logmatic
 import logging
-import requests #pip._vendor.
+import requests
 import re
 import os
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import pyotp
 from kiteconnect import KiteConnect
 from constants import constants #(relative)
@@ -46,9 +46,9 @@ def need_to_generate_token():
             data = json.load(f)
         print ("Previous login time for "+data["user_name"]+" is "+str(data["login_time"]))
         login_time = datetime.strptime(data["login_time"],"%Y-%m-%d %H:%M:%S")
-        today = datetime.now()
-        cut_off_time = datetime(today.year,today.month,today.day,7,00,00)
-        if login_time > cut_off_time and "access_token" in data.keys():
+        login_time = login_time + timedelta(days=1)
+        cut_off_time = datetime(login_time.year,login_time.month,login_time.day,7,00,00)
+        if datetime.now() < cut_off_time and "access_token" in data.keys():
             print ("Acces token is fresh")
         else:
             os.remove(fp)
@@ -235,8 +235,14 @@ def startSession():
         
         kite = kite_session()
         
-        bd.calculateBB(kite)
+        hour = datetime.now().hour
+        exchange = kite.EXCHANGE_NSE
+        if (hour % 2) == 0:
+            exchange =  kite.EXCHANGE_NFO
         
+        exit_code = bd.calculateBB(kite, exchange)
+        if exit_code == -1:
+            startSession()
     else:
         logging.info ("how to add this to azure functions")
 
