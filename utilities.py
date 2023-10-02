@@ -48,6 +48,17 @@ def send_email(lstGoodInstruments, lst_instruments, bull=True):
         print (ex)
         return ex
 
+def get_blob_client(local_file_name):
+    # Create the BlobServiceClient object
+    blob_service_client = BlobServiceClient.from_connection_string(constants.CONNECTION_STRING)
+    
+    # Create the Blob Container object
+    container = blob_service_client.get_container_client(container=constants.CONTAINER_NAME)
+    
+    blob_client = container.get_blob_client(local_file_name)
+    return container,blob_client
+
+
 def upload_blob(local_file_name = "access_credentials.json"):
     if ("22557" in str(constants.TEMPHERE)):
         return
@@ -56,21 +67,10 @@ def upload_blob(local_file_name = "access_credentials.json"):
     #os.environ["HTTP_PROXY"] = "http://10.10.1.10:1180"
     #os.environ["HTTPS_PROXY"] = "http://10.10.1.10:1180"
 
-    container_name = "lofty-cloud-blobs"
     upload_file_path = os.path.join(constants.TEMPHERE, local_file_name)
-    STORAGEACCOUNTKEY = "wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg=="
-    
-    account_url = "https://bulionbucket.blob.core.windows.net/lofty-cloud-blobs/access_credentials.json"
-    connection_string = "DefaultEndpointsProtocol=https;AccountName=bulionbucket;AccountKey=wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg==;EndpointSuffix=core.windows.net"
     ssl._create_default_https_context = ssl._create_unverified_context
     
-    # Create the BlobServiceClient object
-    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-    
-    # Create the Blob Container object
-    container = blob_service_client.get_container_client(container=container_name)
-    
-    blob_client = container.get_blob_client(local_file_name)
+    container, blob_client = get_blob_client(local_file_name)
     
     if (blob_client.exists()):
         blob_client.delete_blob()
@@ -78,27 +78,23 @@ def upload_blob(local_file_name = "access_credentials.json"):
     with open(file=upload_file_path, mode="rb") as data:
         blob_client = container.upload_blob(name=local_file_name, data=data, overwrite=False)
  
+def delete_blob(local_file_name = constants.INSTRUMENTS):
+    if ("22557" in str(constants.TEMPHERE)):
+        return
+    ssl._create_default_https_context = ssl._create_unverified_context
+    
+    container, blob_client = get_blob_client(local_file_name)
+    if (blob_client.exists()):
+        blob_client.delete_blob()
 
-def download_blob():
+def download_blob(local_file_name = "access_credentials.json"):
     if ("22557" in str(constants.TEMPHERE)):
         return
     #try:
-    container_name = "lofty-cloud-blobs"
-    local_file_name = "access_credentials.json"
     download_file_path = os.path.join(constants.TEMPHERE, local_file_name)
-    STORAGEACCOUNTKEY = "wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg=="
-    
-    account_url = "https://bulionbucket.blob.core.windows.net/lofty-cloud-blobs/access_credentials.json"
-    connection_string = "DefaultEndpointsProtocol=https;AccountName=bulionbucket;AccountKey=wBuY2m+mdwDXiTF0SsYAhtShctvAwUp1+zgEnnwiTpls17+4NcapbrrnDMLzkE+7HzacqSyKhUFJ+AStf5K4vg==;EndpointSuffix=core.windows.net"
     ssl._create_default_https_context = ssl._create_unverified_context
     
-    # Create the BlobServiceClient object
-    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-    
-    # Create the Blob Container object
-    container = blob_service_client.get_container_client(container=container_name)
-    
-    blob_client = container.get_blob_client(local_file_name)
+    container, blob_client = get_blob_client(local_file_name)
     
     if (blob_client.exists()):
         bytes = blob_client.download_blob().readall()
@@ -108,11 +104,13 @@ def download_blob():
     #except Exception as ex:
     #        print ("Exception raised for blob as  here --" + str(ex))
         
-
-def upload_json(lstgoodinstruments, lst_instruments):
-    instrument_file_name = "instruments.json"
-    instrument_file_path = os.path.join(constants.TEMPHERE, instrument_file_name)
+def create_instrument_file(lstgoodinstruments, lst_instruments):
+    instrument_file_path = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
     # Serializing json  
+    
+    if (len(lstgoodinstruments) == 0 and len(lst_instruments) == 0):
+        delete_blob(constants.INSTRUMENTS)
+        return
     
     final_list = { "good buy" : lstgoodinstruments, "buy" : lst_instruments }
     json_object = json.dumps(final_list, indent = 4) 
@@ -121,7 +119,7 @@ def upload_json(lstgoodinstruments, lst_instruments):
     with open(instrument_file_path, "w+") as outfile:
         outfile.write(json_object)
         
-    upload_blob(instrument_file_name)
-        
+    upload_blob(constants.INSTRUMENTS)
+
 #uploadblob()
 #download_blob()

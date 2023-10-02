@@ -111,6 +111,8 @@ def calculateBB(kite, exchange):
             if "access_token" in str(ex) and "Incorrect" in str(ex):
                 fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
                 os.remove(fp)
+                fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
+                os.remove(fp)
                 return -1
             continue
 
@@ -144,10 +146,10 @@ def calculateBB(kite, exchange):
         if low < 2 and (len(lstVolume) - 1) > 0:
             momVolume = sum(lstVolume) / (len(lstVolume) - 1)
             if len(lstVolume) > 6 and momVolume > (volume * 1.3):
-                str_format = {"instrument" : inst, "last_price": ohlc["NSE:"+inst]["last_price"]}
+                str_format = {"instrument" : inst, "inst_token": ohlc["NSE:"+inst]["instrument_token"], "last_price": ohlc["NSE:"+inst]["last_price"]}
                 lstGoodInstruments.append(str_format)
             elif len(lstVolume) > 4 and momVolume > (volume * 1.1):
-                str_format = {"instrument" : inst, "last_price": ohlc["NSE:"+inst]["last_price"]}
+                str_format = {"instrument" : inst, "inst_token": ohlc["NSE:"+inst]["instrument_token"], "last_price": ohlc["NSE:"+inst]["last_price"]}
                 lstInstruments.append(str_format)
             #else:
             #    print ("This instrument is in not in good volume " + str(script) + " : " + inst["tradingsymbol"])
@@ -164,7 +166,7 @@ def calculateBB(kite, exchange):
     #    print ("This instrument is in uptrend : " + inst["tradingsymbol"])
     
     if (exchange == kite.EXCHANGE_NFO):
-        ut.upload_json(lstGoodInstruments, lstInstruments)
+        ut.create_instrument_file(lstGoodInstruments, lstInstruments)
     else:
         ut.send_email(lstGoodInstruments, lstInstruments)
     
