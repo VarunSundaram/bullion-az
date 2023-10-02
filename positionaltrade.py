@@ -10,8 +10,9 @@ from datetime import datetime, timedelta
 import pyotp
 from kiteconnect import KiteConnect
 from constants import constants #(relative)
-import bollingerdata as bd
 import utilities as ut
+import ticker
+import bollingerdata as bd
 
 __author__ = "Varun kumar Sundaram"
 
@@ -37,6 +38,7 @@ def load_kite_config():
 
 def need_to_generate_token():
     ut.download_blob()
+    ut.download_blob(constants.INSTRUMENTS)
     flag = False
     fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
     login_time=''
@@ -67,7 +69,7 @@ def kite_session():
     """
     fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
     with open(fp, 'r') as f:
-            data = json.load(f)
+        data = json.load(f)
     
     kite = KiteConnect(api_key=data["api_key"], access_token=data["access_token"])
     return kite
@@ -211,6 +213,7 @@ def start_session():
         # Load the kite configuration information
         kite_config = load_kite_config()
         generate_token,login_time = need_to_generate_token()
+        # generate_token = True
 
         if generate_token :
             sess = requests.Session()
@@ -234,15 +237,20 @@ def start_session():
             print ("Access token is valid till next day 7 am from "+str(login_time))
         
         kite = kite_session()
-        
-        hour = datetime.now().hour
-        exchange = kite.EXCHANGE_NSE
-        if (hour % 2) == 0:
-            exchange =  kite.EXCHANGE_NFO
-        
-        exit_code = bd.calculateBB(kite, exchange)
-        if exit_code == -1:
-            start_session()
+        connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
+
+        if os.path.exists(connect_fp):
+            print ("instruments files is found")
+            ticker.start_ticker(kite_config["KITE_API_KEY"], kite)
+        else:
+            hour = datetime.now().hour
+            exchange = kite.EXCHANGE_NSE
+            if (hour % 2) == 0:
+                exchange =  kite.EXCHANGE_NFO
+            
+            exit_code = bd.calculateBB(kite, exchange)
+            if exit_code == -1:
+                start_session()
     else:
         logging.info ("how to add this to azure functions")
 
