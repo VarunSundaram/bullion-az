@@ -243,6 +243,8 @@ def start_session():
         if hour >= 4 and hour <= 9:
             logging.info('going into ticker operation')
             ticker.start_ticker(kite_config["KITE_API_KEY"], kite)
+        elif hour >= 20 :
+            print ("do nothing")
         elif hour >= 19 :
             ut.delete_blob(constants.ACCESS)
             ut.delete_blob(constants.INSTRUMENTS)
