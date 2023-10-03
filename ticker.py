@@ -15,7 +15,7 @@ import utilities as ut
 def on_ticks(ws, ticks):
     # Callback to receive ticks.
     for tick_data in ticks:
-        print ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )    
+        logging.info ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )    
 
 def on_connect(ws, response):
     # Callback on successful connect.
@@ -29,9 +29,9 @@ def on_connect(ws, response):
     for inst in inst_list:
         ticker_inst.append(inst["inst_token"])
     
-    print ([260105,256265])
-    print (ticker_inst)
-    ws.subscribe(ticker_inst)
+    #print ([260105,256265])
+    logging.info (ticker_inst)
+    ws.subscribe (ticker_inst)
 
     # Set all instruments to tick in `full` mode.
     ws.set_mode(ws.MODE_FULL, ticker_inst)
@@ -56,7 +56,7 @@ def on_error(ws, code, reason):
 
 
 def on_reconnect(ws, code, reason):
-    print ("on reconnect")
+    logging.info ("on reconnect")
 
 def start_ticker(api_key, kite):
     ut.download_blob(constants.INSTRUMENTS)
