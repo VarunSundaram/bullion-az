@@ -3,6 +3,7 @@ from kiteconnect import KiteConnect
 
 import logging
 import os
+import random
 from constants import constants
 import json
 from datetime import datetime, timedelta
@@ -14,8 +15,10 @@ import utilities as ut
 
 def on_ticks(ws, ticks):
     # Callback to receive ticks.
-    for tick_data in ticks:
-        logging.info ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )    
+    tick_data = random.choice(ticks)
+    #for tick_data in ticks:
+    logging.info ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )    
+    #    break
 
 def on_connect(ws, response):
     # Callback on successful connect.
@@ -80,7 +83,8 @@ def start_ticker(api_key, kite):
         stop = datetime.now()
         elapsed = stop - start
 
-        if elapsed >= timedelta(minutes=9):
+        if elapsed >= timedelta(minutes=8):
             logging.info ("Slept for > 9 minute")
             break
-        
+        else:
+            logging.info ("timer is still waiting")
