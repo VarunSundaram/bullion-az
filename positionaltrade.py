@@ -177,7 +177,7 @@ def kite_post_twofa(url,  http_session):
             reply = response.headers["Location"]
             request_token = re.findall(r'request_token=(.*)&action',reply)[0]
     except Exception as e:
-        print ("in post 2fa expcetion block..")
+        logging.info ("in post 2fa expcetion block..")
         pat = re.compile(r'request_token=(.*?)\s+')
         request_token = re.search(pat, str(e)).group(1).strip()
         request_token = request_token.split('&')[0]
@@ -195,13 +195,13 @@ def generate_access_token(config,request_token):
     data["request_token"] = request_token
 
     user_data = json.dumps(data, indent=4, sort_keys=True, default=str)
-    print (data["user_name"],data["login_time"],data["access_token"])    
+    logging.info (data["user_name"],data["login_time"],data["access_token"])    
 
     with open(fp, "w") as outfile:
         outfile.write(user_data)
     #time.sleep(5)
     kite.set_access_token(data["access_token"])
-    print ("Automatic login for "+data["user_name"]+" is done. "+constants.ACCESS+" has been written to disk")
+    logging.info ("Automatic login for "+data["user_name"]+" is done. "+constants.ACCESS+" has been written to disk")
     return kite
 
 def start_session():
@@ -223,7 +223,7 @@ def start_session():
 
             # Attempt a login and get the response as a dictionary
             user_pass_login_resp = login_kite(config=kite_config, http_session=sess)
-            print ("Login successful!")
+            logging.info ("Login successful!")
 
             # Attempt two-factor auth
             two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
@@ -234,18 +234,19 @@ def start_session():
             kite = generate_access_token(kite_config,request_token)
             ut.upload_blob()
         else:
-            print ("Access token is valid till next day 7 am from "+str(login_time))
+            logging.info ("Access token is valid till next day 7 am from "+str(login_time))
         
         kite = kite_session()
         hour = datetime.utcnow().hour
-        if hour >= 4 and hour <= 10:
-            print ("instruments files is found")
+        if hour >= 4 and hour <= 15:
+            logging.info('going into ticker operation')
             ticker.start_ticker(kite_config["KITE_API_KEY"], kite)
         else:
             exchange = kite.EXCHANGE_NSE
             if (hour % 2) == 0:
                 exchange =  kite.EXCHANGE_NFO
             
+            logging.info('calculating bollinger data')
             exit_code = bd.calculateBB(kite, exchange)
             if exit_code == -1:
                 start_session()
