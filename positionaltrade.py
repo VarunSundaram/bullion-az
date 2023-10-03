@@ -237,13 +237,11 @@ def start_session():
             print ("Access token is valid till next day 7 am from "+str(login_time))
         
         kite = kite_session()
-        connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
-
-        if os.path.exists(connect_fp):
+        hour = datetime.utcnow().hour
+        if hour >= 4 and hour <= 9:
             print ("instruments files is found")
             ticker.start_ticker(kite_config["KITE_API_KEY"], kite)
         else:
-            hour = datetime.now().hour
             exchange = kite.EXCHANGE_NSE
             if (hour % 2) == 0:
                 exchange =  kite.EXCHANGE_NFO

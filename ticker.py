@@ -14,7 +14,8 @@ import utilities as ut
 
 def on_ticks(ws, ticks):
     # Callback to receive ticks.
-    print ("Ticks: {}".format(ticks))
+    for tick_data in ticks:
+        print ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )    
 
 def on_connect(ws, response):
     # Callback on successful connect.

@@ -78,7 +78,7 @@ def upload_blob(local_file_name = "access_credentials.json"):
     with open(file=upload_file_path, mode="rb") as data:
         blob_client = container.upload_blob(name=local_file_name, data=data, overwrite=False)
  
-def delete_blob(local_file_name = constants.INSTRUMENTS):
+def delete_blob(local_file_name = constants.ACCESS):
     if ("22557" in str(constants.TEMPHERE)):
         return
     ssl._create_default_https_context = ssl._create_unverified_context
