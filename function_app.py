@@ -17,5 +17,5 @@ def loftypts(myTimer: func.TimerRequest) -> None:
 
     logging.info('Python timer trigger function ran at %s', utc_timestamp)
     hour = datetime.datetime.utcnow().hour
-    if hour >= 3 and hour <= 15:
+    if hour >= 3 and hour <= 20:
         ps.start_session()

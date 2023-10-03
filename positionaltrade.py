@@ -46,7 +46,7 @@ def need_to_generate_token():
         print (constants.ACCESS + " present in temporary folder")
         with open(fp, 'r') as f:
             data = json.load(f)
-        print ("Previous login time for "+data["user_name"]+" is "+str(data["login_time"]))
+        logging.info ("Previous login time for "+data["user_name"]+" is "+str(data["login_time"]))
         login_time = datetime.strptime(data["login_time"],"%Y-%m-%d %H:%M:%S")
         login_time = login_time + timedelta(days=1)
         cut_off_time = datetime(login_time.year,login_time.month,login_time.day,7,00,00)
@@ -117,6 +117,7 @@ def login_kite(config, http_session):
         del resp_dict["message"]
 
     if response.status_code != HTTPStatus.OK:
+        logging.info ("Login failure", extra=resp_dict)
         print ("Login failure", extra=resp_dict)
         raise ConnectionError("Login failed!")
 
@@ -209,6 +210,7 @@ def start_session():
     if flag:
         # Initialize logging framework
         # init_logging()
+        ut.start_time = datetime.now()
 
         # Load the kite configuration information
         kite_config = load_kite_config()
@@ -238,13 +240,16 @@ def start_session():
         
         kite = kite_session()
         hour = datetime.utcnow().hour
-        if hour >= 4 and hour <= 15:
+        if hour >= 4 and hour <= 9:
             logging.info('going into ticker operation')
             ticker.start_ticker(kite_config["KITE_API_KEY"], kite)
+        elif hour >= 19 :
+            ut.delete_blob(constants.ACCESS)
+            ut.delete_blob(constants.INSTRUMENTS)
         else:
             exchange = kite.EXCHANGE_NSE
-            if (hour % 2) == 0:
-                exchange =  kite.EXCHANGE_NFO
+            #if (hour % 2) == 0:
+            #    exchange =  kite.EXCHANGE_NFO
             
             logging.info('calculating bollinger data')
             exit_code = bd.calculateBB(kite, exchange)
