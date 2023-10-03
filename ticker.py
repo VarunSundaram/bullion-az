@@ -59,6 +59,8 @@ def on_reconnect(ws, code, reason):
     print ("on reconnect")
 
 def start_ticker(api_key, kite):
+    ut.download_blob(constants.INSTRUMENTS)
+    
     # Initialise
     kws = KiteTicker(api_key, kite.access_token) # debug=True
     start = datetime.now()

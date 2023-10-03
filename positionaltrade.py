@@ -238,7 +238,7 @@ def start_session():
         
         kite = kite_session()
         hour = datetime.utcnow().hour
-        if hour >= 4 and hour <= 9:
+        if hour >= 4 and hour <= 10:
             print ("instruments files is found")
             ticker.start_ticker(kite_config["KITE_API_KEY"], kite)
         else:
