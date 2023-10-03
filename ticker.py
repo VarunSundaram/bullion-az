@@ -70,7 +70,13 @@ def start_ticker(api_key, kite):
 
     # Infinite loop on the main thread. Nothing after this will run.
     # You have to use the pre-defined callbacks to manage subscriptions.
-    kws.connect()
+    try:
+        kws.connect()
+    except Exception as ex:
+        logging.info("Exception raised while connecting kite to --" + str(ex))
+        ut.delete_blob(constants.ACCESS)
+        ut.delete_blob(constants.INSTRUMENTS)
+        return
     
     while True:
         time.sleep(1)
