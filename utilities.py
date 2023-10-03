@@ -7,6 +7,8 @@ import requests
 import json
 import logging
 
+start_time = ''
+
 def send_email(lstGoodInstruments, lst_instruments, bull=True):
     try:
         connection_string = "endpoint=https://loftynotification.india.communication.azure.com/;accesskey=ewnfBfxcc73nqA+epomtCv9qabIjD5WS9oZV86KO44KfJVlqemVp7s268eyBUWUCuVW3Uz+TOm7m3Om6/CacZw=="
@@ -89,6 +91,8 @@ def delete_blob(local_file_name = constants.ACCESS):
     if (blob_client.exists()):
         logging.info('delete blob name %s', local_file_name)
         blob_client.delete_blob()
+    else:
+        logging.info('blob name {0} not found to delete'.format(local_file_name))
 
 def download_blob(local_file_name = "access_credentials.json"):
     if ("22557" in str(constants.TEMPHERE)):
@@ -105,6 +109,8 @@ def download_blob(local_file_name = "access_credentials.json"):
         os.makedirs(os.path.dirname(download_file_path), exist_ok=True)
         with open(download_file_path, "wb") as file:
             file.write(bytes)
+    else:
+        logging.info('blob name {0} not found for download'.format(local_file_name))
     #except Exception as ex:
     #        print ("Exception raised for blob as  here --" + str(ex))
         

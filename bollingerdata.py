@@ -70,7 +70,6 @@ def calculateBB(kite, exchange):
     lstGoodInstruments = []
     lstInstruments = []
     ohlc = []
-    start = datetime.now()
     day = datetime.now().day
     if (exchange == kite.EXCHANGE_NFO):
         if (day > 22):
@@ -155,7 +154,7 @@ def calculateBB(kite, exchange):
             #    print ("This instrument is in not in good volume " + str(script) + " : " + inst["tradingsymbol"])
 
         stop = datetime.now()
-        elapsed = stop - start
+        elapsed = stop - ut.start_time
 
         if elapsed >= timedelta(minutes=9):
             print ("Slept for > 9 minute")
@@ -165,10 +164,9 @@ def calculateBB(kite, exchange):
     #for inst in lstInstruments:
     #    print ("This instrument is in uptrend : " + inst["tradingsymbol"])
     
-    if (exchange == kite.EXCHANGE_NFO):
-        ut.create_instrument_file(lstGoodInstruments, lstInstruments)
-    else:
-        ut.send_email(lstGoodInstruments, lstInstruments)
+    #if (exchange == kite.EXCHANGE_NFO):
+    ut.create_instrument_file(lstGoodInstruments, lstInstruments)
+    ut.send_email(lstGoodInstruments, lstInstruments)
     
     return 0
 
