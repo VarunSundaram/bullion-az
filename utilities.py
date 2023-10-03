@@ -5,6 +5,7 @@ from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import ssl
 import requests
 import json
+import logging
 
 def send_email(lstGoodInstruments, lst_instruments, bull=True):
     try:
@@ -73,6 +74,7 @@ def upload_blob(local_file_name = "access_credentials.json"):
     container, blob_client = get_blob_client(local_file_name)
     
     if (blob_client.exists()):
+        logging.info('before uploding blob delete old blob name %s', local_file_name)
         blob_client.delete_blob()
     
     with open(file=upload_file_path, mode="rb") as data:
@@ -85,6 +87,7 @@ def delete_blob(local_file_name = constants.ACCESS):
     
     container, blob_client = get_blob_client(local_file_name)
     if (blob_client.exists()):
+        logging.info('delete blob name %s', local_file_name)
         blob_client.delete_blob()
 
 def download_blob(local_file_name = "access_credentials.json"):
@@ -97,6 +100,7 @@ def download_blob(local_file_name = "access_credentials.json"):
     container, blob_client = get_blob_client(local_file_name)
     
     if (blob_client.exists()):
+        logging.info('download blob name %s', local_file_name)
         bytes = blob_client.download_blob().readall()
         os.makedirs(os.path.dirname(download_file_path), exist_ok=True)
         with open(download_file_path, "wb") as file:

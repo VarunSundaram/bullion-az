@@ -39,8 +39,8 @@ def on_connect(ws, response):
 def on_close(ws, code, reason):
     # On connection close stop the main loop
     # Reconnection will not happen after executing `ws.stop()`
-    print("Websocket Error Code: ", code)
-    print("Reason: ", reason)
+    logging.info ("Websocket Error Code: ", code)
+    logging.info ("Reason: ", reason)
     if "access_token" in str(reason) and "Incorrect" in str(reason):
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
@@ -49,11 +49,11 @@ def on_close(ws, code, reason):
 def on_error(ws, code, reason):
     # On connection close stop the main loop
     # Reconnection will happen after executing `ws.error()`
+    logging.info ("on_error while connecting kite to --" + str(reason))
     if "access_token" in str(reason) and "Incorrect" in str(reason):
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
-        
-    print ("on error")
+
 
 def on_reconnect(ws, code, reason):
     print ("on reconnect")
@@ -73,13 +73,7 @@ def start_ticker(api_key, kite):
 
     # Infinite loop on the main thread. Nothing after this will run.
     # You have to use the pre-defined callbacks to manage subscriptions.
-    try:
-        kws.connect()
-    except Exception as ex:
-        logging.info("Exception raised while connecting kite to --" + str(ex))
-        ut.delete_blob(constants.ACCESS)
-        ut.delete_blob(constants.INSTRUMENTS)
-        return
+    kws.connect()
     
     while True:
         time.sleep(1)
@@ -87,6 +81,6 @@ def start_ticker(api_key, kite):
         elapsed = stop - start
 
         if elapsed >= timedelta(minutes=9):
-            print ("Slept for > 9 minute")
+            logging.info ("Slept for > 9 minute")
             break
         
