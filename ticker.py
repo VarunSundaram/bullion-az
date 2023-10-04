@@ -17,7 +17,7 @@ def on_ticks(ws, ticks):
     # Callback to receive ticks.
     tick_data = random.choice(ticks)
     #for tick_data in ticks:
-    logging.info ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )    
+    #   logging.info ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )    
     #   break
     check_ticker(ws, ticks)
 
