@@ -198,10 +198,12 @@ def generate_access_token(config,request_token):
     if "request_token" in data.keys():
         del data["request_token"]
         del data["refresh_token"]
+        logging.info ("deleted old request token")
     data["request_token"] = request_token
 
     user_data = json.dumps(data, indent=4, sort_keys=True, default=str)
     logging.info (data["access_token"])
+    print (data["user_name"],data["login_time"],data["access_token"])
 
     with open(fp, "w") as outfile:
         outfile.write(user_data)
