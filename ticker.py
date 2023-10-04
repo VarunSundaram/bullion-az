@@ -17,7 +17,7 @@ def on_ticks(ws, ticks):
     # Callback to receive ticks.
     tick_data = random.choice(ticks)
     #for tick_data in ticks:
-    logging.info ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )    
+    #   logging.info ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )    
     #   break
     check_ticker(ws, ticks)
 
@@ -62,21 +62,26 @@ def on_error(ws, code, reason):
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
     
-    ws.close()
     ws.stop()
+    ws.close()
 
 
 def on_reconnect(ws, code, reason):
     logging.info ("on reconnect")
 
 def start_ticker(api_key, kite):
-    exit_code = ut.download_blob(constants.INSTRUMENTS)
+    connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
     
-    if (exit_code == -1):
-        logging.info('calculating bollinger data')
-        exchange = kite.EXCHANGE_NFO
-        exit_code = bd.calculateBB(kite, exchange)
-        return
+    if os.path.isfile(connect_fp):
+        logging.info('instrument is already there. no need to dwonload again')
+    else:
+        exit_code = ut.download_blob(constants.INSTRUMENTS)
+    
+        if (exit_code == -1):
+            logging.info('calculating bollinger data')
+            exchange = kite.EXCHANGE_NFO
+            exit_code = bd.calculateBB(kite, exchange)
+            return
     # Initialise
     kws = KiteTicker(api_key, kite.access_token) # debug=True
     
@@ -95,10 +100,10 @@ def check_ticker(ws, ticks):
     elapsed = stop - ut.start_time
 
     if elapsed >= timedelta(minutes=9):
-        logging.info ("Slept for > 9 minute")
-        print ("Slept for > 9 minute")
-        ws.close()
+        logging.info ("Slept for > 9 minute in ticker function")
+        print ("Slept for > 9 minute in ticker function")
         ws.stop()
+        ws.close()
     else:
         print ("waiting to close connexion with time {0}".format(elapsed))
         
