@@ -104,7 +104,7 @@ def delete_blob(local_file_name = constants.ACCESS):
 
 def download_blob(local_file_name = "access_credentials.json"):
     if ("22557" in str(constants.TEMPHERE)):
-        return 0
+        return -1
     #try:
     download_file_path = os.path.join(constants.TEMPHERE, local_file_name)
     ssl._create_default_https_context = ssl._create_unverified_context

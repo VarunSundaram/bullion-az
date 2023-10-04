@@ -201,7 +201,7 @@ def generate_access_token(config,request_token):
     data["request_token"] = request_token
 
     user_data = json.dumps(data, indent=4, sort_keys=True, default=str)
-    logging.info (data["user_name"],data["login_time"],data["access_token"])    
+    logging.info (data["access_token"])
 
     with open(fp, "w") as outfile:
         outfile.write(user_data)
@@ -236,7 +236,7 @@ def start_session():
             two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
             #LOGGER.info("Two-factor authentication passed!", extra=two_fa_resp)
             request_token = kite_post_twofa(url=ref_url,http_session=sess)
-            print ("Generated request token = %s",str(request_token))
+            print ("Generated request token = %s".format(str(request_token)))
 
             kite = generate_access_token(kite_config,request_token)
             ut.upload_blob()
