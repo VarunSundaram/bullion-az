@@ -37,12 +37,13 @@ def load_kite_config():
     return config
 
 def need_to_generate_token():
-    ut.download_blob()
+    exit_code = ut.download_blob()
     ut.download_blob(constants.INSTRUMENTS)
     flag = False
     fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
+        
     login_time=''
-    if os.path.isfile(fp):
+    if os.path.isfile(fp) and exit_code == 0:
         print (constants.ACCESS + " present in temporary folder")
         with open(fp, 'r') as f:
             data = json.load(f)
@@ -51,13 +52,17 @@ def need_to_generate_token():
         login_time = login_time + timedelta(days=1)
         cut_off_time = datetime(login_time.year,login_time.month,login_time.day,7,00,00)
         if datetime.now() < cut_off_time and "access_token" in data.keys():
-            print ("Acces token is fresh")
+            logging.info ("Acces token is fresh")
         else:
             os.remove(fp)
-            print (constants.ACCESS+" has been deleted.")
+            logging.info (constants.ACCESS+" has been deleted.")
             flag=True
     else:
-        print (constants.ACCESS+" does not exist in current folder")
+        if os.path.isfile(fp) and exit_code == -1:
+            os.remove(fp)
+            logging.info (constants.ACCESS+" deleted from local folder")
+        else:
+            logging.info (constants.ACCESS+" does not exist in current folder")
         flag = True
     return flag,login_time
 
@@ -240,6 +245,10 @@ def start_session():
         
         kite = kite_session()
         hour = datetime.utcnow().hour
+        
+        if (generate_token):
+            if ut.check_blob(constants.INSTRUMENTS) == False:
+                hour = 22
         if hour >= 4 and hour <= 9:
             logging.info('going into ticker operation')
             ticker.start_ticker(kite_config["KITE_API_KEY"], kite)

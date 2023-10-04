@@ -81,6 +81,14 @@ def upload_blob(local_file_name = "access_credentials.json"):
     
     with open(file=upload_file_path, mode="rb") as data:
         blob_client = container.upload_blob(name=local_file_name, data=data, overwrite=False)
+
+def check_blob(local_file_name = constants.ACCESS):
+    if ("22557" in str(constants.TEMPHERE)):
+        return
+    ssl._create_default_https_context = ssl._create_unverified_context
+    
+    container, blob_client = get_blob_client(local_file_name)
+    return blob_client.exists()
  
 def delete_blob(local_file_name = constants.ACCESS):
     if ("22557" in str(constants.TEMPHERE)):
@@ -96,7 +104,7 @@ def delete_blob(local_file_name = constants.ACCESS):
 
 def download_blob(local_file_name = "access_credentials.json"):
     if ("22557" in str(constants.TEMPHERE)):
-        return
+        return 0
     #try:
     download_file_path = os.path.join(constants.TEMPHERE, local_file_name)
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -111,6 +119,8 @@ def download_blob(local_file_name = "access_credentials.json"):
             file.write(bytes)
     else:
         logging.info('blob name {0} not found for download'.format(local_file_name))
+        return -1
+    return 0
     #except Exception as ex:
     #        print ("Exception raised for blob as  here --" + str(ex))
         
