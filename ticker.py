@@ -24,7 +24,10 @@ def on_ticks(ws, ticks):
 def on_connect(ws, response):
     # Callback on successful connect.
     connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
-
+    
+    if os.path.isfile(connect_fp):
+        logging.info ("instrument.json file is not found")
+    
     with open(connect_fp, mode="r") as connect_file:
         instruments = json.load(connect_file)
     
