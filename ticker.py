@@ -26,7 +26,7 @@ def on_connect(ws, response):
     connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
     
     if os.path.isfile(connect_fp):
-        logging.info ("instrument.json file is not found")
+        logging.info ("instrument.json file is found")
     
     with open(connect_fp, mode="r") as connect_file:
         instruments = json.load(connect_file)
@@ -62,9 +62,7 @@ def on_error(ws, code, reason):
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
     
-    ws.stop()
     ws.close()
-
 
 def on_reconnect(ws, code, reason):
     logging.info ("on reconnect")
@@ -102,7 +100,6 @@ def check_ticker(ws, ticks):
     if elapsed >= timedelta(minutes=9):
         logging.info ("Slept for > 9 minute in ticker function")
         print ("Slept for > 9 minute in ticker function")
-        ws.stop()
         ws.close()
     else:
         print ("waiting to close connexion with time {0}".format(elapsed))
