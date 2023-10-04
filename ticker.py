@@ -70,13 +70,18 @@ def on_reconnect(ws, code, reason):
     logging.info ("on reconnect")
 
 def start_ticker(api_key, kite):
-    exit_code = ut.download_blob(constants.INSTRUMENTS)
+    connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
     
-    if (exit_code == -1):
-        logging.info('calculating bollinger data')
-        exchange = kite.EXCHANGE_NFO
-        exit_code = bd.calculateBB(kite, exchange)
-        return
+    if os.path.isfile(connect_fp):
+        logging.info('instrument is already there. no need to dwonload again')
+    else:
+        exit_code = ut.download_blob(constants.INSTRUMENTS)
+    
+        if (exit_code == -1):
+            logging.info('calculating bollinger data')
+            exchange = kite.EXCHANGE_NFO
+            exit_code = bd.calculateBB(kite, exchange)
+            return
     # Initialise
     kws = KiteTicker(api_key, kite.access_token) # debug=True
     
