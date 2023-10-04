@@ -62,8 +62,8 @@ def on_error(ws, code, reason):
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
     
-    ws.close()
     ws.stop()
+    ws.close()
 
 
 def on_reconnect(ws, code, reason):
@@ -95,10 +95,10 @@ def check_ticker(ws, ticks):
     elapsed = stop - ut.start_time
 
     if elapsed >= timedelta(minutes=9):
-        logging.info ("Slept for > 9 minute")
-        print ("Slept for > 9 minute")
-        ws.close()
+        logging.info ("Slept for > 9 minute in ticker function")
+        print ("Slept for > 9 minute in ticker function")
         ws.stop()
+        ws.close()
     else:
         print ("waiting to close connexion with time {0}".format(elapsed))
         
