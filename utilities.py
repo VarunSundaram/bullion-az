@@ -84,7 +84,7 @@ def upload_blob(local_file_name = "access_credentials.json"):
 
 def check_blob(local_file_name = constants.ACCESS):
     if ("22557" in str(constants.TEMPHERE)):
-        return False
+        return True
     ssl._create_default_https_context = ssl._create_unverified_context
     
     container, blob_client = get_blob_client(local_file_name)
@@ -118,10 +118,11 @@ def download_blob(local_file_name = "access_credentials.json"):
         os.makedirs(os.path.dirname(download_file_path), exist_ok=True)
         with open(download_file_path, "wb") as file:
             file.write(bytes)
+        return 0
     else:
         logging.info('blob name {0} not found for download'.format(local_file_name))
-        return -1
-    return 0
+        
+    return -1
     #except Exception as ex:
     #        print ("Exception raised for blob as  here --" + str(ex))
         
