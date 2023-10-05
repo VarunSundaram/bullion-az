@@ -237,11 +237,11 @@ def start_session():
             create_new_session()
 
     if hour >= 4 and hour <= 9:
-        if (not ut.check_blob()):
+        if (ut.download_blob() == 0):
             create_new_session()
         kite = kite_session()
 
-        if (ut.check_blob(constants.INSTRUMENTS)):
+        if (ut.download_blob(constants.INSTRUMENTS) == 0):
             logging.info('going into ticker operation')
             ticker.start_ticker(kite.api_key, kite)
         else:
