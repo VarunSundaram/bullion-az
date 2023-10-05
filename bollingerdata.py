@@ -87,14 +87,10 @@ def calculateBB(kite, exchange):
                 #act_instruments["%03d"%instruments_count] = inst
     else:
         for inst in instruments:
-            if inst["tick_size"] == 0.01 and inst["segment"] == "NSE" and inst["lot_size"] == 1:
+            if inst["tick_size"] == 0.05 and inst["segment"] == "NSE" and inst["lot_size"] == 1:
                 act_instruments.append(inst["tradingsymbol"])
     
-    if (day % 2) == 0:
-        print("{0} is Even".format(day))
-    else:
-        print("{0} is Odd".format(day))
-        act_instruments = reversed(act_instruments)
+    print("found as many instruments as {0}".format(len(act_instruments)))
     
     for inst in act_instruments:
         script += 1
@@ -118,7 +114,7 @@ def calculateBB(kite, exchange):
         if len(ohlc) == 0:
             continue
 
-        if ohlc["NSE:"+inst]["last_price"] < 60:
+        if ohlc["NSE:"+inst]["last_price"] < 60 and ohlc["NSE:"+inst]["last_price"] > 2500:
             continue
         # ohlc["NSE:"+inst["tradingsymbol"]]
         dayHistory = kite.historical_data(ohlc["NSE:"+inst]["instrument_token"],
