@@ -234,49 +234,55 @@ def start_session():
         if (ut.check_blob(constants.ACCESS) and ut.check_blob(constants.INSTRUMENTS)):
             return
         else:
-            # Load the kite configuration information
-            kite_config = load_kite_config()
-            generate_token,login_time = need_to_generate_token()
-            # generate_token = True
-
-            if generate_token :
-                sess = requests.Session()
-
-                # Attempt pre-login
-                ref_url = kite_prelogin(config=kite_config, http_session=sess)
-
-                # Attempt a login and get the response as a dictionary
-                user_pass_login_resp = login_kite(config=kite_config, http_session=sess)
-                logging.info ("Login successful!")
-
-                # Attempt two-factor auth
-                two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
-                #LOGGER.info("Two-factor authentication passed!", extra=two_fa_resp)
-                request_token = kite_post_twofa(url=ref_url,http_session=sess)
-                print ("Generated request token = %s".format(str(request_token)))
-
-                kite = generate_access_token(kite_config,request_token)
-                ut.upload_blob()
-            else:
-                logging.info ("Access token is valid till next day 7 am from "+str(login_time))
-                kite = kite_session()
-
-            exchange = kite.EXCHANGE_NSE
-            #if (hour % 2) == 0:
-            #    exchange =  kite.EXCHANGE_NFO
-            
-            logging.info('calculating bollinger data')
-            exit_code = bd.calculateBB(kite, exchange)
-            if exit_code == -1:
-                start_session()
+            create_new_session()
 
     if hour >= 4 and hour <= 9:
-        ut.upload_blob()
-        ut.upload_blob(constants.INSTRUMENTS)
+        if (not ut.check_blob()):
+            create_new_session()
         kite = kite_session()
-        
-        logging.info('going into ticker operation')
-        ticker.start_ticker(kite_config["KITE_API_KEY"], kite)
+
+        if (ut.check_blob(constants.INSTRUMENTS)):
+            logging.info('going into ticker operation')
+            ticker.start_ticker(kite.api_key, kite)
+        else:
+            bd.calculateBB(kite, kite.EXCHANGE_NSE)
+
+def create_new_session():
+    # Load the kite configuration information
+    kite_config = load_kite_config()
+    generate_token,login_time = need_to_generate_token()
+    # generate_token = True
+
+    if generate_token :
+        sess = requests.Session()
+
+        # Attempt pre-login
+        ref_url = kite_prelogin(config=kite_config, http_session=sess)
+
+        # Attempt a login and get the response as a dictionary
+        user_pass_login_resp = login_kite(config=kite_config, http_session=sess)
+        logging.info ("Login successful!")
+
+        # Attempt two-factor auth
+        two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
+        #LOGGER.info("Two-factor authentication passed!", extra=two_fa_resp)
+        request_token = kite_post_twofa(url=ref_url,http_session=sess)
+        print ("Generated request token = %s".format(str(request_token)))
+
+        kite = generate_access_token(kite_config,request_token)
+        ut.upload_blob()
+    else:
+        logging.info ("Access token is valid till next day 7 am from "+str(login_time))
+        kite = kite_session()
+
+    exchange = kite.EXCHANGE_NSE
+    #if (hour % 2) == 0:
+    #    exchange =  kite.EXCHANGE_NFO
+    
+    logging.info('calculating bollinger data')
+    exit_code = bd.calculateBB(kite, exchange)
+    if exit_code == -1:
+        start_session()
 
 if __name__ == "__main__":
     start_session()
