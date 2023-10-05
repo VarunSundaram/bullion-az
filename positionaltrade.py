@@ -38,19 +38,18 @@ def load_kite_config():
 
 def need_to_generate_token():
     exit_code = ut.download_blob()
-    ut.download_blob(constants.INSTRUMENTS)
     flag = False
     fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
         
     login_time=''
-    if os.path.isfile(fp) and exit_code == 0:
+    if os.path.isfile(fp):
         print (constants.ACCESS + " present in temporary folder")
         with open(fp, 'r') as f:
             data = json.load(f)
         logging.info ("Previous login time for "+data["user_name"]+" is "+str(data["login_time"]))
         login_time = datetime.strptime(data["login_time"],"%Y-%m-%d %H:%M:%S")
         login_time = login_time + timedelta(days=1)
-        cut_off_time = datetime(login_time.year,login_time.month,login_time.day,7,00,00)
+        cut_off_time = datetime(login_time.year,login_time.month,login_time.day,2,00,00)
         if datetime.now() < cut_off_time and "access_token" in data.keys():
             logging.info ("Acces token is fresh")
         else:
@@ -213,53 +212,55 @@ def generate_access_token(config,request_token):
     return kite
 
 def start_session():
-    flag = True
-    if flag:
-        # Initialize logging framework
-        # init_logging()
-        ut.start_time = datetime.now()
+    # Initialize logging framework
+    # init_logging()
+    ut.start_time = datetime.now()
 
-        # Load the kite configuration information
-        kite_config = load_kite_config()
-        generate_token,login_time = need_to_generate_token()
-        # generate_token = True
-
-        if generate_token :
-            sess = requests.Session()
-
-            # Attempt pre-login
-            ref_url = kite_prelogin(config=kite_config, http_session=sess)
-
-            # Attempt a login and get the response as a dictionary
-            user_pass_login_resp = login_kite(config=kite_config, http_session=sess)
-            logging.info ("Login successful!")
-
-            # Attempt two-factor auth
-            two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
-            #LOGGER.info("Two-factor authentication passed!", extra=two_fa_resp)
-            request_token = kite_post_twofa(url=ref_url,http_session=sess)
-            print ("Generated request token = %s".format(str(request_token)))
-
-            kite = generate_access_token(kite_config,request_token)
-            ut.upload_blob()
+    hour = datetime.utcnow().hour
+    if hour >= 20 or hour <= 2:
+        print ("do nothing")
+        return
+    elif hour >= 19 :
+        fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
+        if os.path.isfile(fp):
+            os.remove(fp)
+        fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
+        if os.path.isfile(fp):
+            os.remove(fp)
+        ut.delete_blob(constants.ACCESS)
+        ut.delete_blob(constants.INSTRUMENTS)
+        return
+    elif hour == 3:
+        if (ut.check_blob(constants.ACCESS) and ut.check_blob(constants.INSTRUMENTS)):
+            return
         else:
-            logging.info ("Access token is valid till next day 7 am from "+str(login_time))
-        
-        kite = kite_session()
-        hour = datetime.utcnow().hour
-        
-        if (generate_token):
-            if ut.check_blob(constants.INSTRUMENTS) == False:
-                hour = 22
-        if hour >= 4 and hour <= 9:
-            logging.info('going into ticker operation')
-            ticker.start_ticker(kite_config["KITE_API_KEY"], kite)
-        elif hour >= 20 :
-            print ("do nothing")
-        elif hour >= 19 :
-            ut.delete_blob(constants.ACCESS)
-            ut.delete_blob(constants.INSTRUMENTS)
-        else:
+            # Load the kite configuration information
+            kite_config = load_kite_config()
+            generate_token,login_time = need_to_generate_token()
+            # generate_token = True
+
+            if generate_token :
+                sess = requests.Session()
+
+                # Attempt pre-login
+                ref_url = kite_prelogin(config=kite_config, http_session=sess)
+
+                # Attempt a login and get the response as a dictionary
+                user_pass_login_resp = login_kite(config=kite_config, http_session=sess)
+                logging.info ("Login successful!")
+
+                # Attempt two-factor auth
+                two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
+                #LOGGER.info("Two-factor authentication passed!", extra=two_fa_resp)
+                request_token = kite_post_twofa(url=ref_url,http_session=sess)
+                print ("Generated request token = %s".format(str(request_token)))
+
+                kite = generate_access_token(kite_config,request_token)
+                ut.upload_blob()
+            else:
+                logging.info ("Access token is valid till next day 7 am from "+str(login_time))
+                kite = kite_session()
+
             exchange = kite.EXCHANGE_NSE
             #if (hour % 2) == 0:
             #    exchange =  kite.EXCHANGE_NFO
@@ -268,9 +269,14 @@ def start_session():
             exit_code = bd.calculateBB(kite, exchange)
             if exit_code == -1:
                 start_session()
-    else:
-        logging.info ("how to add this to azure functions")
 
+    if hour >= 4 and hour <= 9:
+        ut.upload_blob()
+        ut.upload_blob(constants.INSTRUMENTS)
+        kite = kite_session()
+        
+        logging.info('going into ticker operation')
+        ticker.start_ticker(kite_config["KITE_API_KEY"], kite)
 
 if __name__ == "__main__":
     start_session()
