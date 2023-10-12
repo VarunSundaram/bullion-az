@@ -236,7 +236,7 @@ def start_session():
         else:
             create_new_session()
 
-    if hour >= 4 and hour <= 11:
+    if hour >= 4 and hour <= 9:
         if (ut.download_blob() == -1):
             create_new_session()
         kite = kite_session()
