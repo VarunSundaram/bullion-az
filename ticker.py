@@ -22,23 +22,27 @@ def on_ticks(ws, ticks):
     check_ticker(ws, ticks)
 
 def on_connect(ws, response):
-    # Callback on successful connect.
-    connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
-    
-    if os.path.isfile(connect_fp):
-        logging.info ("instrument.json file is found")
-    
-    with open(connect_fp, mode="r") as connect_file:
-        instruments = json.load(connect_file)
-    
-    inst_list = instruments["good buy"] + instruments["buy"]
-    ticker_inst = []
-    for inst in inst_list:
-        ticker_inst.append(inst["inst_token"])
-    
-    #print ([260105,256265])
-    logging.info (ticker_inst)
-    ws.subscribe (ticker_inst)
+    try:
+        # Callback on successful connect.
+        connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
+        
+        if os.path.isfile(connect_fp):
+            logging.info ("instrument.json file is found")
+        
+        with open(connect_fp, mode="r") as connect_file:
+            instruments = json.load(connect_file)
+        
+        inst_list = instruments["good buy"] + instruments["buy"]
+        ticker_inst = []
+        for inst in inst_list:
+            ticker_inst.append(inst["inst_token"])
+        
+        #print ([260105,256265])
+        logging.info (ticker_inst)
+        ws.subscribe (ticker_inst)
+    except Exception as ex:
+        logging.info ("Exception raised during ticker.connect() as --" + str(ex))
+        raise Exception(ex)
 
     # Set all instruments to tick in `full` mode.
     ws.set_mode(ws.MODE_FULL, ticker_inst)
