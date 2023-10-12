@@ -35,17 +35,18 @@ def on_connect(ws, response):
         inst_list = instruments["good buy"] + instruments["buy"]
         ticker_inst = []
         for inst in inst_list:
-            ticker_inst.append(str(inst["inst_token"]))
+            ticker_inst.append(inst["inst_token"])
         
         #print ([260105,256265])
         logging.info (ticker_inst)
         ws.subscribe (ticker_inst)
+        
+        # Set all instruments to tick in `full` mode.
+        ws.set_mode(ws.MODE_FULL, ticker_inst)
+
     except Exception as ex:
         logging.info ("Exception raised during ticker.connect() as --" + str(ex))
         raise Exception(ex)
-
-    # Set all instruments to tick in `full` mode.
-    ws.set_mode(ws.MODE_FULL, ticker_inst)
 
 def on_close(ws, code, reason):
     # On connection close stop the main loop
@@ -75,12 +76,14 @@ def start_ticker(api_key, kite):
     connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
     
     if os.path.isfile(connect_fp):
-        logging.info('instrument is already there. no need to dwonload again')
+        logging.info ('instrument is already there. no need to dwonload again')
     else:
+        logging.info ('instrument is not found in temp folder. Assuming previous download failed')
         exit_code = ut.download_blob(constants.INSTRUMENTS)
     
         if (exit_code == -1):
             logging.info('calculating bollinger data')
+            print ('calculating bollinger data')
             exchange = kite.EXCHANGE_NFO
             exit_code = bd.calculateBB(kite, exchange)
             return

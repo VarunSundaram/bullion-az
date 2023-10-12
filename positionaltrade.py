@@ -232,7 +232,7 @@ def start_session():
         return
     elif hour == 3:
         if (ut.check_blob(constants.ACCESS) and ut.check_blob(constants.INSTRUMENTS)):
-            return
+           return
         else:
             create_new_session()
 
