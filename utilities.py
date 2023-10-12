@@ -102,7 +102,7 @@ def delete_blob(local_file_name = constants.ACCESS):
     else:
         logging.info('blob name {0} not found to delete'.format(local_file_name))
 
-def download_blob(local_file_name = "access_credentials.json"):
+def download_blob(local_file_name = constants.ACCESS):
     if ("22557" in str(constants.TEMPHERE)):
         print ("in local debug session..")
         return 0

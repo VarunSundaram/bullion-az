@@ -232,11 +232,11 @@ def start_session():
         return
     elif hour == 3:
         if (ut.check_blob(constants.ACCESS) and ut.check_blob(constants.INSTRUMENTS)):
-            return
+           return
         else:
             create_new_session()
 
-    if hour >= 4 and hour <= 9:
+    if hour >= 4 and hour <= 20:
         if (ut.download_blob() == -1):
             create_new_session()
         kite = kite_session()

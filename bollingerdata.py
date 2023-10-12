@@ -113,9 +113,17 @@ def calculateBB(kite, exchange):
 
         if len(ohlc) == 0:
             continue
+        
+        if ("3PLAND" in inst):
+            print ("come here")
 
-        if ohlc["NSE:"+inst]["last_price"] < 60 and ohlc["NSE:"+inst]["last_price"] > 2500:
+        if round(ohlc["NSE:"+inst]["last_price"]) < 60 or round(ohlc["NSE:"+inst]["last_price"]) > 2500:
             continue
+        
+        if round(ohlc["NSE:"+inst]['ohlc']["open"]) == 0 or round(ohlc["NSE:"+inst]['ohlc']["high"]) == 0 or round(ohlc["NSE:"+inst]['ohlc']["low"]) == 0 or round(ohlc["NSE:"+inst]['ohlc']["close"]) == 0:
+            print (inst + " is having either of ohlc as zero")
+            continue
+            
         # ohlc["NSE:"+inst["tradingsymbol"]]
         dayHistory = kite.historical_data(ohlc["NSE:"+inst]["instrument_token"],
                                 previousDay, currentDay, "day")
