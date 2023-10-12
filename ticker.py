@@ -35,7 +35,7 @@ def on_connect(ws, response):
         inst_list = instruments["good buy"] + instruments["buy"]
         ticker_inst = []
         for inst in inst_list:
-            ticker_inst.append(inst["inst_token"])
+            ticker_inst.append(str(inst["inst_token"]))
         
         #print ([260105,256265])
         logging.info (ticker_inst)
