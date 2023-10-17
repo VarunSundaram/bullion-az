@@ -94,19 +94,19 @@ def start_ticker(api_key, access_token):
     kws = KiteTicker(api_key, access_token) # debug=True
     
     # Assign the callbacks.
-    logging.info('on_tick callback')
     kws.on_ticks = on_ticks
-    logging.info('on_connect callback')
     kws.on_connect = on_connect
-    logging.info('on_close callback')
     kws.on_close = on_close
-    logging.info('on_error callback')
     kws.on_error = on_error
 
     # Infinite loop on the main thread. Nothing after this will run.
     # You have to use the pre-defined callbacks to manage subscriptions
-    logging.info('Connecting to kite ticker..')
-    kws.connect()
+    try:
+        logging.info ('Connecting to kite ticker..')
+        kws.connect()
+    except Exception as ex:
+        logging.info ("Exception raised during kite.connect() as --" + str(ex))
+        raise Exception(ex)
                 
 def check_ticker(ws, ticks):
     stop = datetime.now()
