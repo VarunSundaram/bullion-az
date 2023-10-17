@@ -105,11 +105,15 @@ def start_ticker(api_key, access_token):
         logging.info ('Connecting to kite ticker..')
         kws.connect()
     except Exception as ex:
-        logging.error ("Exception raised during kite.connect() as --" + str(ex))
-        logging.info ("try again to connect to ticker")
+        logging.info ("Exception raised during kite.connect() as --" + str(ex))
         print ("Trying again as Exception raised during kite.connect() trace --" + str(ex))
+    
+    try:
+        logging.info ('Connecting to kite ticker again..')
         kws.connect()
-        # raise Exception(ex)
+    except Exception as ex:
+        logging.error ("Exception raised during kite.connect() as --" + str(ex))
+    # raise Exception(ex)
                 
 def check_ticker(ws, ticks):
     stop = datetime.now()
