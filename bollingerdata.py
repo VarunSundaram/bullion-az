@@ -134,6 +134,13 @@ def calculateBB(kite, exchange):
         low = 0
         last20 = 20
         volume, lstVolume = getVolume(dayHistory)
+        
+        momVolume = sum(lstVolume) / len(lstVolume)
+        baseline_volume = (ohlc["NSE:"+inst]["last_price"] / 50) * 3000
+        
+        if (baseline_volume > momVolume):
+            print ("script {2} has baseline {0} volume is more than minimum volume expectation of {1}".format(baseline_volume, momVolume, inst))
+            continue
 
         while low < 2 and last20 > 0:
             # if "20MICRONS-BE" in inst["tradingsymbol"] or "360ONE" in inst["tradingsymbol"]:
@@ -147,7 +154,7 @@ def calculateBB(kite, exchange):
             last20 -= 1
 
         if low < 2 and (len(lstVolume) - 1) > 0:
-            momVolume = sum(lstVolume) / (len(lstVolume) - 1)
+            momVolume = sum(lstVolume) / (len(lstVolume) - 1) 
             if len(lstVolume) > 6 and momVolume > (volume * 1.3):
                 str_format = {"instrument" : inst, "inst_token": ohlc["NSE:"+inst]["instrument_token"], "last_price": ohlc["NSE:"+inst]["last_price"]}
                 lstGoodInstruments.append(str_format)

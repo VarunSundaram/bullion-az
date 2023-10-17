@@ -76,7 +76,7 @@ def kite_session():
         data = json.load(f)
     
     kite = KiteConnect(api_key=data["api_key"], access_token=data["access_token"])
-    return kite
+    return kite, data["api_key"], data["access_token"]
 
 def kite_prelogin(config, http_session):
     """
@@ -239,11 +239,11 @@ def start_session():
     if hour >= 4 and hour <= 9:
         if (ut.download_blob() == -1):
             create_new_session()
-        kite = kite_session()
+        kite, api_key, access_token = kite_session()
 
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
             logging.info('going into ticker operation')
-            ticker.start_ticker(kite.api_key, kite)
+            ticker.start_ticker(api_key, access_token)
         else:
             bd.calculateBB(kite, kite.EXCHANGE_NSE)
 
