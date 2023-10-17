@@ -54,9 +54,9 @@ def on_connect(ws, response):
 def on_close(ws, code, reason):
     # On connection close stop the main loop
     # Reconnection will not happen after executing `ws.stop()`
-    ws.stop()
-    print ("Websocket Error Code: {0} and reason {1}".format(code, reason))
     logging.info ("Websocket Error Code: {0} and reason {1}".format(code, reason))
+    print ("Websocket Error Code: {0} and reason {1}".format(code, reason))
+    ws.stop()
     if "access_token" in str(reason) and "Incorrect" in str(reason):
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
@@ -88,20 +88,24 @@ def start_ticker(api_key, access_token):
             logging.info('Session Failed. So deleting blob to try new')
             print ('Session Failed. So deleting blob to try new')
             ut.delete_blob()
-            ut.delete_blob(constants.INSTRUMENTS)
             return
     
     # Initialise
     kws = KiteTicker(api_key, access_token) # debug=True
     
     # Assign the callbacks.
+    logging.info('on_tick callback')
     kws.on_ticks = on_ticks
+    logging.info('on_connect callback')
     kws.on_connect = on_connect
+    logging.info('on_close callback')
     kws.on_close = on_close
+    logging.info('on_error callback')
     kws.on_error = on_error
 
     # Infinite loop on the main thread. Nothing after this will run.
-    # You have to use the pre-defined callbacks to manage subscriptions.
+    # You have to use the pre-defined callbacks to manage subscriptions
+    logging.info('Connecting to kite ticker..')
     kws.connect()
                 
 def check_ticker(ws, ticks):
