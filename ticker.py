@@ -28,6 +28,9 @@ def on_connect(ws, response):
         
         if os.path.isfile(connect_fp):
             logging.info ("instrument.json file is found")
+        else:
+            logging.info ("Self raised Exception : instrument.json file is not found")
+            raise Exception("Exception: instrument file is not found in temp folder")
         
         with open(connect_fp, mode="r") as connect_file:
             instruments = json.load(connect_file)
@@ -72,7 +75,7 @@ def on_error(ws, code, reason):
 def on_reconnect(ws, code, reason):
     logging.info ("on reconnect")
 
-def start_ticker(api_key, kite):
+def start_ticker(api_key, access_token):
     connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
     
     if os.path.isfile(connect_fp):
@@ -82,13 +85,14 @@ def start_ticker(api_key, kite):
         exit_code = ut.download_blob(constants.INSTRUMENTS)
     
         if (exit_code == -1):
-            logging.info('calculating bollinger data')
-            print ('calculating bollinger data')
-            exchange = kite.EXCHANGE_NFO
-            exit_code = bd.calculateBB(kite, exchange)
+            logging.info('Session Failed. So deleting blob to try new')
+            print ('Session Failed. So deleting blob to try new')
+            ut.delete_blob()
+            ut.delete_blob(constants.INSTRUMENTS)
             return
+    
     # Initialise
-    kws = KiteTicker(api_key, kite.access_token) # debug=True
+    kws = KiteTicker(api_key, access_token) # debug=True
     
     # Assign the callbacks.
     kws.on_ticks = on_ticks
