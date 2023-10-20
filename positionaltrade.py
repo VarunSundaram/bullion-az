@@ -284,14 +284,18 @@ def create_new_session(flag = False):
         logging.info ("Access token is valid till next day 7 am from "+str(login_time))
         kite = kite_session()
 
-    exchange = kite.EXCHANGE_NSE
-    #if (hour % 2) == 0:
-    #    exchange =  kite.EXCHANGE_NFO
-    
-    logging.info('calculating bollinger data')
-    exit_code = bd.calculateBB(kite, exchange)
-    if exit_code == -1:
-        start_session()
+    if flag:
+        logging.info ("need not calculate BB")
+        print ("need not calculate BB")
+    else:
+        exchange = kite.EXCHANGE_NSE
+        #if (hour % 2) == 0:
+        #    exchange =  kite.EXCHANGE_NFO
+        
+        logging.info('calculating bollinger data')
+        exit_code = bd.calculateBB(kite, exchange)
+        if exit_code == -1:
+            start_session()
 
 if __name__ == "__main__":
     start_session()
