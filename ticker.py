@@ -13,6 +13,27 @@ import utilities as ut
 
 #logging.basicConfig(level=logging.DEBUG)
 
+def get_ticker_inst():
+    # Callback on successful connect.
+    connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
+    
+    if os.path.isfile(connect_fp):
+        logging.info ("instrument.json file is found")
+    else:
+        logging.info ("Self raised Exception : instrument.json file is not found")
+        raise Exception("Exception: instrument file is not found in temp folder")
+    
+    with open(connect_fp, mode="r") as connect_file:
+        instruments = json.load(connect_file)
+    
+    inst_list = instruments["good buy"] + instruments["buy"]
+    ticker_inst = []
+    for inst in inst_list:
+        ticker_inst.append(inst["inst_token"])
+        
+    return ticker_inst
+
+
 def on_ticks(ws, ticks):
     # Callback to receive ticks.
     tick_data = random.choice(ticks)
@@ -23,23 +44,7 @@ def on_ticks(ws, ticks):
 
 def on_connect(ws, response):
     try:
-        # Callback on successful connect.
-        connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
-        
-        if os.path.isfile(connect_fp):
-            logging.info ("instrument.json file is found")
-        else:
-            logging.info ("Self raised Exception : instrument.json file is not found")
-            raise Exception("Exception: instrument file is not found in temp folder")
-        
-        with open(connect_fp, mode="r") as connect_file:
-            instruments = json.load(connect_file)
-        
-        inst_list = instruments["good buy"] + instruments["buy"]
-        ticker_inst = []
-        for inst in inst_list:
-            ticker_inst.append(inst["inst_token"])
-        
+        ticker_inst = get_ticker_inst()
         #print ([260105,256265])
         logging.info (ticker_inst)
         ws.subscribe (ticker_inst)
@@ -53,6 +58,10 @@ def on_connect(ws, response):
 
 def on_close(ws, code, reason):
     # On connection close stop the main loop
+    ticker_inst = get_ticker_inst()
+    ws.unsubscribe(ticker_inst)
+    time.sleep(3)
+    
     # Reconnection will not happen after executing `ws.stop()`
     logging.info ("Websocket Error Code: {0} and reason {1}".format(code, reason))
     print ("Websocket Error Code: {0} and reason {1}".format(code, reason))
