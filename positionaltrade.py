@@ -237,8 +237,7 @@ def start_session():
             create_new_session()
 
     if hour >= 4 and hour <= 9:
-        if (ut.download_blob() == -1):
-            create_new_session()
+        create_new_session(True)
         kite, api_key, access_token = kite_session()
 
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
@@ -247,11 +246,17 @@ def start_session():
         else:
             bd.calculateBB(kite, kite.EXCHANGE_NSE)
 
-def create_new_session():
+def create_new_session(flag = False):
     # Load the kite configuration information
     kite_config = load_kite_config()
-    generate_token,login_time = need_to_generate_token()
-    # generate_token = True
+    if flag:
+        generate_token = True
+        fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
+        if os.path.isfile(fp):
+            os.remove(fp)
+            logging.info (constants.ACCESS+" has been deleted for ticker operation.")
+    else:
+        generate_token,login_time = need_to_generate_token()
 
     if generate_token :
         sess = requests.Session()
@@ -270,7 +275,11 @@ def create_new_session():
         print ("Generated request token = %s".format(str(request_token)))
 
         kite = generate_access_token(kite_config,request_token)
-        ut.upload_blob()
+        if flag:
+            logging.info ("need not upload to blob")
+            print ("need not upload to blob")
+        else:
+            ut.upload_blob()
     else:
         logging.info ("Access token is valid till next day 7 am from "+str(login_time))
         kite = kite_session()
