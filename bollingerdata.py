@@ -61,14 +61,34 @@ def getMiddle30BBOf(dayHistory, basecandles = 20):
 
     return bollinger, last_price
 
+def check_movement(dayHistory, move_by):
+    low = 0
+    last20 = 20
+    while low < 2 and last20 > 0:
+        # if "20MICRONS-BE" in inst["tradingsymbol"] or "360ONE" in inst["tradingsymbol"]:
+        #     print ("hold")
+
+        bollinger, last_price = getMiddle30BBOf(dayHistory, 20)
+        
+        if last_price < bollinger["mBB"] and move_by == "b":
+            low += 1
+        elif last_price > bollinger["mBB"] and move_by == "s":
+            low += 1
+        dayHistory.pop()
+        last20 -= 1
+    
+    return low
+
 def calculateBB(kite, exchange):
     instruments = kite.instruments(exchange)
     basecandles = 164
     previousDay,currentDay = getDays(basecandles)
     script = 0
     act_instruments = []
-    lstGoodInstruments = []
-    lstInstruments = []
+    lst_good_b_Instruments = []
+    lst_b_Instruments = []
+    lst_good_s_Instruments = []
+    lst_s_Instruments = []
     ohlc = []
     day = datetime.now().day
     if (exchange == kite.EXCHANGE_NFO):
@@ -117,7 +137,7 @@ def calculateBB(kite, exchange):
         if ("3PLAND" in inst):
             print ("come here")
 
-        if round(ohlc["NSE:"+inst]["last_price"]) < 60 or round(ohlc["NSE:"+inst]["last_price"]) > 2500:
+        if round(ohlc["NSE:"+inst]["last_price"]) < 80 or round(ohlc["NSE:"+inst]["last_price"]) > 2500:
             continue
         
         if round(ohlc["NSE:"+inst]['ohlc']["open"]) == 0 or round(ohlc["NSE:"+inst]['ohlc']["high"]) == 0 or round(ohlc["NSE:"+inst]['ohlc']["low"]) == 0 or round(ohlc["NSE:"+inst]['ohlc']["close"]) == 0:
@@ -131,44 +151,40 @@ def calculateBB(kite, exchange):
         if len(dayHistory) < 100:
             continue
         
-        low = 0
-        last20 = 20
         volume, lstVolume = getVolume(dayHistory)
         
         momVolume = sum(lstVolume) / len(lstVolume)
-        baseline_volume = (ohlc["NSE:"+inst]["last_price"] / 50) * 3000
+        baseline_volume = (ohlc["NSE:"+inst]["last_price"] / 50) * 3500
         
         if (baseline_volume > momVolume):
             print ("script {2} has baseline {0} volume is more than minimum volume expectation of {1}".format(baseline_volume, momVolume, inst))
             continue
 
-        while low < 2 and last20 > 0:
-            # if "20MICRONS-BE" in inst["tradingsymbol"] or "360ONE" in inst["tradingsymbol"]:
-            #     print ("hold")
-
-            bollinger, last_price = getMiddle30BBOf(dayHistory, 20)
-            
-            if last_price < bollinger["mBB"]:
-                low += 1
-            dayHistory.pop()
-            last20 -= 1
-
+        low = check_movement(dayHistory, "b")
+        
         if low < 2 and (len(lstVolume) - 1) > 0:
             momVolume = sum(lstVolume) / (len(lstVolume) - 1) 
             if len(lstVolume) > 6 and momVolume > (volume * 1.3):
                 str_format = {"instrument" : inst, "inst_token": ohlc["NSE:"+inst]["instrument_token"], "last_price": ohlc["NSE:"+inst]["last_price"]}
-                lstGoodInstruments.append(str_format)
+                lst_good_b_Instruments.append(str_format)
             elif len(lstVolume) > 4 and momVolume > (volume * 1.1):
                 str_format = {"instrument" : inst, "inst_token": ohlc["NSE:"+inst]["instrument_token"], "last_price": ohlc["NSE:"+inst]["last_price"]}
-                lstInstruments.append(str_format)
+                lst_b_Instruments.append(str_format)
+        else:
+            low = check_movement(dayHistory, "s")
+            
+            if low < 2 and (len(lstVolume) - 1) > 0:
+                momVolume = sum(lstVolume) / (len(lstVolume) - 1) 
+                if len(lstVolume) > 6 and momVolume > (volume * 1.3):
+                    str_format = {"instrument" : inst, "inst_token": ohlc["NSE:"+inst]["instrument_token"], "last_price": ohlc["NSE:"+inst]["last_price"]}
+                    lst_good_s_Instruments.append(str_format)
+                elif len(lstVolume) > 4 and momVolume > (volume * 1.1):
+                    str_format = {"instrument" : inst, "inst_token": ohlc["NSE:"+inst]["instrument_token"], "last_price": ohlc["NSE:"+inst]["last_price"]}
+                    lst_s_Instruments.append(str_format)
             #else:
             #    print ("This instrument is in not in good volume " + str(script) + " : " + inst["tradingsymbol"])
 
-        stop = datetime.now()
-        elapsed = stop - ut.start_time
-
-        if elapsed >= timedelta(minutes=9):
-            print ("Slept for > 9 minute")
+        if (check_elapsed_time()):
             break
     #for inst in lstGoodInstruments:
     #    print ("This instrument is in good uptrend : " + inst["tradingsymbol"])
@@ -176,10 +192,19 @@ def calculateBB(kite, exchange):
     #    print ("This instrument is in uptrend : " + inst["tradingsymbol"])
     
     #if (exchange == kite.EXCHANGE_NFO):
-    ut.create_instrument_file(lstGoodInstruments, lstInstruments)
-    ut.send_email(lstGoodInstruments, lstInstruments)
+    ut.create_instrument_file(lst_good_b_Instruments, lst_b_Instruments, lst_good_s_Instruments, lst_s_Instruments)
+    ut.send_email(lst_good_b_Instruments, lst_b_Instruments, lst_good_s_Instruments, lst_s_Instruments)
     
     return 0
+
+def check_elapsed_time():
+    stop = datetime.now()
+    elapsed = stop - ut.start_time
+
+    if elapsed >= timedelta(minutes=9):
+        print ("Slept for > 9 minute")
+        # return True # modified to false for now
+    return False
 
 # if __name__ == "__main__":
     # fp = os.path.join(Constants.CONFIG_PATH, Constants.ACCESS)
