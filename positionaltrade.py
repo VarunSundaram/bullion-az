@@ -13,6 +13,7 @@ from constants import constants #(relative)
 import utilities as ut
 import ticker
 import bollingerdata as bd
+import time
 
 __author__ = "Varun kumar Sundaram"
 
@@ -201,7 +202,7 @@ def generate_access_token(config,request_token):
     data["request_token"] = request_token
 
     user_data = json.dumps(data, indent=4, sort_keys=True, default=str)
-    logging.info (data["access_token"])
+    # logging.info (data["access_token"])
     print (data["user_name"],data["login_time"],data["access_token"])
 
     with open(fp, "w") as outfile:
@@ -230,14 +231,15 @@ def start_session():
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
         return
-    elif hour == 3:
-        if (ut.check_blob(constants.ACCESS) and ut.check_blob(constants.INSTRUMENTS)):
-           return
-        else:
-            create_new_session()
-
+    elif hour <= 3:
+        create_new_session()
+        
+    while (hour <= 3):
+        time.sleep(10)
+        hour = datetime.utcnow().hour
+    
     if hour >= 4 and hour <= 9:
-        create_new_session(True)
+        # create_new_session() # uncomment only during debug session
         kite, api_key, access_token = kite_session()
 
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
@@ -246,57 +248,35 @@ def start_session():
         else:
             bd.calculateBB(kite, kite.EXCHANGE_NSE)
 
-def create_new_session(flag = False):
+def create_new_session():
     # Load the kite configuration information
     kite_config = load_kite_config()
-    if flag:
-        generate_token = True
-        fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
-        if os.path.isfile(fp):
-            os.remove(fp)
-            logging.info (constants.ACCESS+" has been deleted for ticker operation.")
-    else:
-        generate_token,login_time = need_to_generate_token()
 
-    if generate_token :
-        sess = requests.Session()
+    sess = requests.Session()
 
-        # Attempt pre-login
-        ref_url = kite_prelogin(config=kite_config, http_session=sess)
+    # Attempt pre-login
+    ref_url = kite_prelogin(config=kite_config, http_session=sess)
 
-        # Attempt a login and get the response as a dictionary
-        user_pass_login_resp = login_kite(config=kite_config, http_session=sess)
-        logging.info ("Login successful!")
+    # Attempt a login and get the response as a dictionary
+    user_pass_login_resp = login_kite(config=kite_config, http_session=sess)
+    logging.info ("Login successful!")
 
-        # Attempt two-factor auth
-        two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
-        #LOGGER.info("Two-factor authentication passed!", extra=two_fa_resp)
-        request_token = kite_post_twofa(url=ref_url,http_session=sess)
-        print ("Generated request token = %s".format(str(request_token)))
+    # Attempt two-factor auth
+    two_fa_resp = kite_twofa(login_resp=user_pass_login_resp, config=kite_config, http_session=sess)
+    #LOGGER.info("Two-factor authentication passed!", extra=two_fa_resp)
+    request_token = kite_post_twofa(url=ref_url,http_session=sess)
+    print ("Generated request token = %s".format(str(request_token)))
 
-        kite = generate_access_token(kite_config,request_token)
-        if flag:
-            logging.info ("need not upload to blob")
-            print ("need not upload to blob")
-        else:
-            ut.upload_blob()
-    else:
-        logging.info ("Access token is valid till next day 7 am from "+str(login_time))
-        kite = kite_session()
+    kite = generate_access_token(kite_config,request_token)
+    
+    #kite = kite_session()
 
-    if flag:
-        logging.info ("need not calculate BB")
-        print ("need not calculate BB")
-    else:
-        exchange = kite.EXCHANGE_NSE
-        #if (hour % 2) == 0:
-        #    exchange =  kite.EXCHANGE_NFO
-        
-        logging.info('calculating bollinger data')
-        exit_code = bd.calculateBB(kite, exchange)
-        if exit_code == -1:
-            start_session()
+    exchange = kite.EXCHANGE_NSE
+    
+    logging.info('calculating bollinger data')
+    exit_code = bd.calculateBB(kite, exchange)
+    if exit_code == -1:
+        start_session()
 
 if __name__ == "__main__":
     start_session()
-    

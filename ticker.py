@@ -26,7 +26,7 @@ def get_ticker_inst():
     with open(connect_fp, mode="r") as connect_file:
         instruments = json.load(connect_file)
     
-    inst_list = instruments["good buy"] + instruments["buy"]
+    inst_list = instruments["good buy"] + instruments["buy"] + instruments["good sell"] + instruments["sell"]
     ticker_inst = []
     for inst in inst_list:
         ticker_inst.append(inst["inst_token"])
@@ -59,7 +59,8 @@ def on_connect(ws, response):
 def on_close(ws, code, reason):
     # On connection close stop the main loop
     ticker_inst = get_ticker_inst()
-    ws.unsubscribe(ticker_inst)
+    logging.info (ticker_inst)
+    ws.unsubscribe (ticker_inst)
     time.sleep(3)
     
     # Reconnection will not happen after executing `ws.stop()`
@@ -120,10 +121,17 @@ def start_ticker(api_key, access_token):
 def check_ticker(ws, ticks):
     stop = datetime.now()
     elapsed = stop - ut.start_time
+    hour = datetime.utcnow().hour
 
-    if elapsed >= timedelta(minutes=9):
-        logging.info ("Slept for > 9 minute in ticker function")
+    #if elapsed >= timedelta(minutes=9):
+    if hour >= 10:
+        logging.info ("Slept for > 9 minute in ticker function with current time " + str(datetime.utcnow()))
         print ("Slept for > 9 minute in ticker function")
+        # ticker_inst = get_ticker_inst()
+        # logging.info (ticker_inst)
+        # ws.unsubscribe (ticker_inst)
+        # time.sleep(3)
+        
         ws.close()
     else:
         print ("waiting to close connexion with time {0}".format(elapsed))

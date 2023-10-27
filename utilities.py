@@ -9,7 +9,7 @@ import logging
 
 start_time = ''
 
-def send_email(lstGoodInstruments, lst_instruments, bull=True):
+def send_email(lst_good_b_instruments, lst_b_instruments, lst_good_s_instruments, lst_s_instruments):
     try:
         connection_string = "endpoint=https://loftynotification.india.communication.azure.com/;accesskey=ewnfBfxcc73nqA+epomtCv9qabIjD5WS9oZV86KO44KfJVlqemVp7s268eyBUWUCuVW3Uz+TOm7m3Om6/CacZw=="
         client = EmailClient.from_connection_string(connection_string)
@@ -17,21 +17,18 @@ def send_email(lstGoodInstruments, lst_instruments, bull=True):
         subject = "Find data attached"
         
         body = ""
-        if (len(lstGoodInstruments) == 0 and len(lst_instruments) == 0):
+        if (len(lst_good_b_instruments) == 0 and len(lst_b_instruments) == 0 and len(lst_good_s_instruments) == 0 and len(lst_s_instruments) == 0):
             subject = "instruments is  are not in specific trend"
             body = "empty or none list of instruments are found to be true"
         else:
-            for inst in lstGoodInstruments:
-                if (bull):
-                    body = body + "good BUY " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
-                else:
-                    body = body + "good SELL " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
-            for inst in lst_instruments:
-                if (bull):
-                    body = body + "BUY " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
-                else:
-                    body = body + "SELL " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
-
+            for inst in lst_good_b_instruments:
+                body = body + "good BUY " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
+            for inst in lst_good_s_instruments:
+                body = body + "good SELL " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
+            for inst in lst_good_b_instruments:
+                body = body + "BUY " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
+            for inst in lst_good_s_instruments:
+                body = body + "SELL " + inst["instrument"] + " at CMP " + str(inst["last_price"]) + "\n"
 
         message = {
             "senderAddress": "DoNotReply@da760745-49f2-4ccf-8808-111916272d1a.azurecomm.net",
@@ -105,6 +102,9 @@ def delete_blob(local_file_name = constants.ACCESS):
 def download_blob(local_file_name = constants.ACCESS):
     if ("22557" in str(constants.TEMPHERE)):
         print ("in local debug session..")
+        fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
+        if not os.path.isfile(fp):
+            return 1
         return 0
     #try:
     download_file_path = os.path.join(constants.TEMPHERE, local_file_name)
@@ -126,15 +126,15 @@ def download_blob(local_file_name = constants.ACCESS):
     #except Exception as ex:
     #        print ("Exception raised for blob as  here --" + str(ex))
         
-def create_instrument_file(lstgoodinstruments, lst_instruments):
+def create_instrument_file(lst_good_b_Instruments, lst_b_Instruments, lst_good_s_Instruments, lst_s_Instruments):
     instrument_file_path = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
     # Serializing json  
     
-    if (len(lstgoodinstruments) == 0 and len(lst_instruments) == 0):
+    if (len(lst_good_b_Instruments) == 0 and len(lst_b_Instruments) == 0 and len(lst_good_s_Instruments) == 0 and len(lst_s_Instruments) == 0):
         delete_blob(constants.INSTRUMENTS)
         return
     
-    final_list = { "good buy" : lstgoodinstruments, "buy" : lst_instruments }
+    final_list = { "good buy" : lst_good_b_Instruments, "buy" : lst_b_Instruments, "good sell" : lst_good_s_Instruments, "sell" : lst_s_Instruments }
     json_object = json.dumps(final_list, indent = 4) 
     
     # Writing to sample.json
