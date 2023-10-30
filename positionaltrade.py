@@ -232,9 +232,14 @@ def start_session():
         ut.delete_blob(constants.INSTRUMENTS)
         return
     elif hour <= 3:
-        create_new_session()
+        kite = create_new_session()
+        exchange = kite.EXCHANGE_NSE
+        
+        logging.info('calculating bollinger data')
+        exit_code = bd.calculateBB(kite, exchange)
+        return
     elif hour >= 4 and hour <= 9:
-        # create_new_session() # uncomment only during debug session
+        create_new_session() # uncomment only during debug session
         kite, api_key, access_token = kite_session()
 
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
@@ -243,6 +248,8 @@ def start_session():
         else:
             logging.info ('calculating bb again as Instruments not found')
             bd.calculateBB(kite, kite.EXCHANGE_NSE)
+        
+        return
 
 def create_new_session():
     # Load the kite configuration information
@@ -264,15 +271,7 @@ def create_new_session():
     print ("Generated request token = %s".format(str(request_token)))
 
     kite = generate_access_token(kite_config,request_token)
-    
-    #kite = kite_session()
-
-    exchange = kite.EXCHANGE_NSE
-    
-    logging.info('calculating bollinger data')
-    exit_code = bd.calculateBB(kite, exchange)
-    if exit_code == -1:
-        start_session()
+    return kite
 
 if __name__ == "__main__":
     start_session()
