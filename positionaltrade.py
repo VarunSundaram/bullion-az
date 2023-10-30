@@ -231,19 +231,17 @@ def start_session():
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
         return
-    elif hour <= 10:
-        ut.delete_blob(constants.ACCESS)
-        ut.delete_blob(constants.INSTRUMENTS)
+    elif hour <= 3:
         create_new_session()
-        
-    if hour >= 4 and hour <= 9:
+    elif hour >= 4 and hour <= 9:
         # create_new_session() # uncomment only during debug session
         kite, api_key, access_token = kite_session()
 
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
-            logging.info('going into ticker operation')
+            logging.info ('going into ticker operation')
             ticker.start_ticker(api_key, access_token)
         else:
+            logging.info ('calculating bb again as Instruments not found')
             bd.calculateBB(kite, kite.EXCHANGE_NSE)
 
 def create_new_session():
