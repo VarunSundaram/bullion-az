@@ -193,7 +193,7 @@ def calculateBB(kite, exchange):
     
     #if (exchange == kite.EXCHANGE_NFO):
     ut.create_instrument_file(lst_good_b_Instruments, lst_b_Instruments, lst_good_s_Instruments, lst_s_Instruments)
-    ut.send_email(lst_good_b_Instruments, lst_b_Instruments, lst_good_s_Instruments, lst_s_Instruments)
+    # ut.send_email(lst_good_b_Instruments, lst_b_Instruments, lst_good_s_Instruments, lst_s_Instruments)
     
     return 0
 
@@ -203,7 +203,7 @@ def check_elapsed_time():
 
     if elapsed >= timedelta(minutes=9):
         print ("Slept for > 9 minute")
-        # return True # modified to false for now
+        return True # modified to false for now
     return False
 
 # if __name__ == "__main__":
