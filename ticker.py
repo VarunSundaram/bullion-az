@@ -26,7 +26,16 @@ def get_ticker_inst():
     with open(connect_fp, mode="r") as connect_file:
         instruments = json.load(connect_file)
     
-    inst_list = instruments["good buy"] + instruments["buy"] + instruments["good sell"] + instruments["sell"]
+    inst_list = []
+    if "good buy" in instruments:
+        inst_list = inst_list + instruments["good buy"]
+    if "buy" in instruments:
+        inst_list = inst_list + instruments["buy"]
+    if "good sell" in instruments:
+        inst_list = inst_list + instruments["good sell"]
+    if "sell" in instruments:
+        inst_list = inst_list + instruments["sell"]
+    
     ticker_inst = []
     for inst in inst_list:
         ticker_inst.append(inst["inst_token"])
@@ -99,6 +108,8 @@ def start_ticker(api_key, access_token):
             print ('Session Failed. So deleting blob to try new')
             ut.delete_blob()
             return
+    
+    # ticker_inst = get_ticker_inst() # check for ticker list subscription data
     
     # Initialise
     kws = KiteTicker(api_key, access_token) # debug=True
