@@ -121,10 +121,10 @@ def start_ticker(api_key, access_token):
 def check_ticker(ws, ticks):
     stop = datetime.now()
     elapsed = stop - ut.start_time
-    hour = datetime.utcnow().hour
+    #hour = datetime.utcnow().hour
 
-    #if elapsed >= timedelta(minutes=9):
-    if hour >= 10:
+    if elapsed >= timedelta(minutes=9):
+    #if hour >= 10:
         logging.info ("Slept for > 9 minute in ticker function with current time " + str(datetime.utcnow()))
         print ("Slept for > 9 minute in ticker function")
         # ticker_inst = get_ticker_inst()
