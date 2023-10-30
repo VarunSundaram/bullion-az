@@ -231,13 +231,11 @@ def start_session():
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
         return
-    elif hour <= 3:
+    elif hour <= 10:
+        ut.delete_blob(constants.ACCESS)
+        ut.delete_blob(constants.INSTRUMENTS)
         create_new_session()
         
-    while (hour <= 3):
-        time.sleep(10)
-        hour = datetime.utcnow().hour
-    
     if hour >= 4 and hour <= 9:
         # create_new_session() # uncomment only during debug session
         kite, api_key, access_token = kite_session()
