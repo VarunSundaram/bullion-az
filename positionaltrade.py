@@ -241,7 +241,7 @@ def start_session():
     elif hour >= 4 and hour <= 9:
         create_new_session() # uncomment only during debug session
         kite, api_key, access_token = kite_session()
-
+        
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
             logging.info ('going into ticker operation')
             ticker.start_ticker(api_key, access_token)
