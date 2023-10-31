@@ -232,6 +232,9 @@ def start_session():
         ut.delete_blob(constants.INSTRUMENTS)
         return
     elif hour <= 3:
+        if (ut.download_blob(constants.INSTRUMENTS) == 0):
+            logging.info('Instruments is already there')
+            return
         kite = create_new_session()
         exchange = kite.EXCHANGE_NSE
         
