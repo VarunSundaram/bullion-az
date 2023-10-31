@@ -134,9 +134,9 @@ def check_ticker(ws, ticks):
     elapsed = stop - ut.start_time
     #hour = datetime.utcnow().hour
 
-    if elapsed >= timedelta(minutes=9):
+    if elapsed >= timedelta(seconds=570):
     #if hour >= 10:
-        logging.info ("Slept for > 9 minute in ticker function with current time " + str(datetime.utcnow()))
+        logging.info ("Slept for > 9 minute in ticker function with elapsed time {0}".format(elapsed))
         print ("Slept for > 9 minute in ticker function")
         # ticker_inst = get_ticker_inst()
         # logging.info (ticker_inst)
