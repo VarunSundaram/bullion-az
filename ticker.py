@@ -14,6 +14,7 @@ import utilities as ut
 #logging.basicConfig(level=logging.DEBUG)
 
 def get_ticker_inst():
+    logging.info ("get ticker instruments event triggered")
     # Callback on successful connect.
     connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
     
@@ -39,7 +40,8 @@ def get_ticker_inst():
     ticker_inst = []
     for inst in inst_list:
         ticker_inst.append(inst["inst_token"])
-        
+    
+    logging.info ("get ticker instruments event ended")
     return ticker_inst
 
 
@@ -53,6 +55,7 @@ def on_ticks(ws, ticks):
 
 def on_connect(ws, response):
     try:
+        logging.info ("on_connect event triggered")
         ticker_inst = get_ticker_inst()
         #print ([260105,256265])
         logging.info (ticker_inst)
@@ -60,13 +63,14 @@ def on_connect(ws, response):
         
         # Set all instruments to tick in `full` mode.
         ws.set_mode(ws.MODE_FULL, ticker_inst)
-
+        logging.info ("on_connect event ended")
     except Exception as ex:
         logging.info ("Exception raised during ticker.connect() as --" + str(ex))
         raise Exception(ex)
 
 def on_close(ws, code, reason):
     # On connection close stop the main loop
+    logging.info ("on_close event triggered")
     ticker_inst = get_ticker_inst()
     logging.info (ticker_inst)
     ws.unsubscribe (ticker_inst)
@@ -79,8 +83,11 @@ def on_close(ws, code, reason):
     if "access_token" in str(reason) and "Incorrect" in str(reason):
         ut.delete_blob(constants.ACCESS)
         ut.delete_blob(constants.INSTRUMENTS)
+    
+    logging.info ("on_close event ended")
 
 def on_error(ws, code, reason):
+    logging.info ("on_error event triggered")
     # On connection close stop the main loop
     # Reconnection will happen after executing `ws.error()`
     logging.info ("on_error while connecting kite to --" + str(reason))
@@ -90,6 +97,7 @@ def on_error(ws, code, reason):
         ut.delete_blob(constants.INSTRUMENTS)
     
     ws.close()
+    logging.info ("on_close event ended")
 
 def on_reconnect(ws, code, reason):
     logging.info ("on reconnect")
@@ -137,7 +145,7 @@ def check_ticker(ws, ticks):
     if elapsed >= timedelta(seconds=570):
     #if hour >= 10:
         logging.info ("Slept for > 9 minute in ticker function with elapsed time {0}".format(elapsed))
-        print ("Slept for > 9 minute in ticker function")
+        print ("Slept for > 9 minute in ticker function with elapsed time {0}".format(elapsed))
         # ticker_inst = get_ticker_inst()
         # logging.info (ticker_inst)
         # ws.unsubscribe (ticker_inst)
