@@ -134,11 +134,15 @@ def start_ticker(api_key, access_token):
         logging.info ('Connecting to kite ticker..')
         kws.connect(threaded=True)
         #kws.connect()
+        while True:
+            time.sleep(1)
+            if check_thread_timer():
+                kws.close()
     except Exception as ex:
         logging.info ("Exception raised during kite.connect() as --" + str(ex))
         raise (ex)
-                    
-def check_ticker(ws, ticks):
+
+def check_thread_timer():
     stop = datetime.now()
     elapsed = stop - ut.start_time
     #hour = datetime.utcnow().hour
@@ -152,7 +156,12 @@ def check_ticker(ws, ticks):
         # ws.unsubscribe (ticker_inst)
         # time.sleep(3)
         
-        ws.close()
+        return True
     else:
         print ("waiting to close connexion with time {0}".format(elapsed))
-        
+        return False
+
+def check_ticker(ws, ticks):
+    if check_thread_timer():
+        #ws.close()
+        logging.info ("In ticker thread with > 9 minute  elapsed time {0}".format(datetime.now()))
