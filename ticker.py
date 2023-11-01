@@ -132,7 +132,8 @@ def start_ticker(api_key, access_token):
     # You have to use the pre-defined callbacks to manage subscriptions
     try:
         logging.info ('Connecting to kite ticker..')
-        kws.connect()
+        kws.connect(threaded=True)
+        #kws.connect()
     except Exception as ex:
         logging.info ("Exception raised during kite.connect() as --" + str(ex))
         raise (ex)
