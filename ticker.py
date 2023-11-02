@@ -137,7 +137,12 @@ def start_ticker(api_key, access_token):
         while True:
             time.sleep(1)
             if check_thread_timer():
+                ticker_inst = get_ticker_inst()
+                logging.info (ticker_inst)
+                kws.unsubscribe (ticker_inst)
+                time.sleep(3)
                 kws.close()
+                return
     except Exception as ex:
         logging.info ("Exception raised during kite.connect() as --" + str(ex))
         raise (ex)
