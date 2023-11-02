@@ -48,7 +48,13 @@ def get_ticker_inst():
 def on_ticks(ws, ticks):
     # Callback to receive ticks.
     tick_data = random.choice(ticks)
-    check_ticker(ws, ticks)
+    logging.info ("Ticks: token : {0}, last_price : {1}, volume : {2}".format(str(tick_data["instrument_token"]), str(tick_data["last_price"]), str(tick_data["volume_traded"]))  )
+    if check_ticker(ws, ticks):
+        ticker_inst = get_ticker_inst()
+        logging.info (ticker_inst)
+        ws.unsubscribe (ticker_inst)
+        time.sleep(3)
+        ws.close()
 
 def on_connect(ws, response):
     try:
@@ -129,7 +135,7 @@ def start_ticker(api_key, access_token):
     # You have to use the pre-defined callbacks to manage subscriptions
     try:
         logging.info ('Connecting to kite ticker..')
-        kws.connect(threaded=True)
+        kws.connect()
         #kws.connect()
         while True:
             time.sleep(1)
@@ -151,3 +157,5 @@ def check_ticker(ws, ticks):
     if ut.check_elapsed_time():
         #ws.close()
         logging.info ("In ticker thread with > 9 minute  elapsed time {0}".format(datetime.now()))
+        return True
+    return False
