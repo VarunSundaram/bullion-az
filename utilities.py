@@ -1,4 +1,5 @@
 from azure.communication.email import EmailClient
+from datetime import date, datetime, timedelta
 import os
 from constants import constants
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
@@ -142,6 +143,19 @@ def create_instrument_file(lst_good_b_Instruments, lst_b_Instruments, lst_good_s
         outfile.write(json_object)
         
     upload_blob(constants.INSTRUMENTS)
+
+def check_elapsed_time():
+    stop = datetime.now()
+    elapsed = stop - start_time
+    #hour = datetime.utcnow().hour
+
+    if elapsed >= timedelta(seconds=570):
+    #if hour >= 10:
+        logging.info ("Slept for > 9 minute in ticker function with elapsed time {0}".format(elapsed))
+        print ("Slept for > 9 minute in ticker function with elapsed time {0}".format(elapsed))
+        return True # modified to false for now
+    else:
+        return False
 
 #uploadblob()
 #download_blob()
