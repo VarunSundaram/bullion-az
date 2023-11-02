@@ -184,7 +184,7 @@ def calculateBB(kite, exchange):
             #else:
             #    print ("This instrument is in not in good volume " + str(script) + " : " + inst["tradingsymbol"])
 
-        if (check_elapsed_time()):
+        if (ut.check_elapsed_time()):
             break
     #for inst in lstGoodInstruments:
     #    print ("This instrument is in good uptrend : " + inst["tradingsymbol"])
@@ -196,15 +196,6 @@ def calculateBB(kite, exchange):
     # ut.send_email(lst_good_b_Instruments, lst_b_Instruments, lst_good_s_Instruments, lst_s_Instruments)
     
     return 0
-
-def check_elapsed_time():
-    stop = datetime.now()
-    elapsed = stop - ut.start_time
-
-    if elapsed >= timedelta(minutes=9):
-        print ("Slept for > 9 minute")
-        return True # modified to false for now
-    return False
 
 # if __name__ == "__main__":
     # fp = os.path.join(Constants.CONFIG_PATH, Constants.ACCESS)
