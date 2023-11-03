@@ -235,12 +235,10 @@ def start_session():
             logging.info ('going into ticker operation')
             output = subprocess.check_output(["python", "--version"], text=True)
             logging.info ("value return subprocess command.. " + str(output))
-            result = subprocess.Popen(["python", "ticker.py"])
-            exit_code = 1
-            while exit_code == 1:
-                exit_code = result.wait()
-                time.sleep(1)
-            logging.info ("Exit Code of the subprocess wait.. " + str(exit_code))
+            result = subprocess.run(["python", "ticker.py"], capture_output=True)
+            logging.info ("Exit Code of the subprocess wait.. " + str(result))
+            logging.info ("1 Exit Code of the subprocess wait.. " + str(result.returncode))
+            logging.info ("2 Exit Code of the subprocess wait.. " + str(result.check_returncode()))
         else:
             logging.info ('calculating bb again as Instruments not found')
             bd.calculateBB()
