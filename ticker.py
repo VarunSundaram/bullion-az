@@ -143,7 +143,10 @@ def start_ticker(api_key, access_token):
             if ut.check_elapsed_time():
                 ticker_inst = get_ticker_inst()
                 logging.info (ticker_inst)
-                kws.unsubscribe (ticker_inst)
+                if kws.is_connected:
+                    kws.unsubscribe (ticker_inst)
+                else:
+                    logging.info ("Not connected any further so need not unsubscribe ")
                 time.sleep(3)
                 kws.close()
                 return
