@@ -233,6 +233,8 @@ def start_session():
         
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
             logging.info ('going into ticker operation')
+            output = subprocess.check_output(["python", "--version"], text=True)
+            logging.info ("value return subprocess command.. " + str(output))
             result = subprocess.Popen(["python", "ticker.py"])
             exit_code = 1
             while exit_code == 1:
