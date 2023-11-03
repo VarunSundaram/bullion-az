@@ -233,7 +233,9 @@ def start_session():
         
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
             logging.info ('going into ticker operation')
-            subprocess.run(["python", "ticker.py"])
+            result = subprocess.run(["python", "ticker.py"])
+            exit_code = result.wait()
+            logging.info ("Exit Code of the subprocess wait.. " + str(exit_code))
         else:
             logging.info ('calculating bb again as Instruments not found')
             bd.calculateBB()
