@@ -14,6 +14,7 @@ import utilities as ut
 import ticker
 import bollingerdata as bd
 import time
+import subprocess
 
 __author__ = "Varun kumar Sundaram"
 
@@ -65,19 +66,6 @@ def need_to_generate_token():
             logging.info (constants.ACCESS+" does not exist in current folder")
         flag = True
     return flag,login_time
-
-def kite_session():
-    """
-    Create new kite session
-    :return: KiteConnect instance
-    :rtype: kiteconnect
-    """
-    fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
-    with open(fp, 'r') as f:
-        data = json.load(f)
-    
-    kite = KiteConnect(api_key=data["api_key"], access_token=data["access_token"])
-    return kite, data["api_key"], data["access_token"]
 
 def kite_prelogin(config, http_session):
     """
@@ -215,8 +203,7 @@ def generate_access_token(config,request_token):
 def start_session():
     # Initialize logging framework
     # init_logging()
-    ut.start_time = datetime.now()
-
+    
     hour = datetime.utcnow().hour
     if hour >= 20 or hour <= 2:
         print ("do nothing")
@@ -241,17 +228,16 @@ def start_session():
         logging.info('calculating bollinger data')
         exit_code = bd.calculateBB(kite, exchange)
         return
-    elif hour >= 4 and hour <= 9:
+    elif hour >= 4 and hour <= 16:  #9
         create_new_session() # uncomment only during debug session
-        kite, api_key, access_token = kite_session()
         
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
             logging.info ('going into ticker operation')
-            ticker.start_ticker(api_key, access_token)
+            subprocess.run(["python", "ticker.py"])
         else:
             logging.info ('calculating bb again as Instruments not found')
-            bd.calculateBB(kite, kite.EXCHANGE_NSE)
-        
+            bd.calculateBB()
+
         return
 
 def create_new_session():

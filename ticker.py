@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 import bollingerdata as bd
 import time
 import utilities as ut
+import subprocess
 
 #logging.basicConfig(level=logging.DEBUG)
 
@@ -65,7 +66,7 @@ def on_connect(ws, response):
         ws.subscribe (ticker_inst)
         
         # Set all instruments to tick in `full` mode.
-        ws.set_mode(ws.MODE_FULL, ticker_inst)
+        ws.set_mode(ws.MODE_QUOTE, ticker_inst)
         logging.info ("on_connect event ended")
     except Exception as ex:
         logging.info ("Exception raised during ticker.connect() as --" + str(ex))
@@ -105,7 +106,9 @@ def on_error(ws, code, reason):
 def on_reconnect(ws, code, reason):
     logging.info ("on reconnect")
 
-def start_ticker(api_key, access_token):
+def start_ticker():
+    ut.start_time = datetime.now()
+    api_key, access_token = ut.get_session_token()
     connect_fp = os.path.join(constants.TEMPHERE, constants.INSTRUMENTS)
     
     if os.path.isfile(connect_fp):
@@ -163,3 +166,6 @@ def check_ticker(ws, ticks):
         logging.info ("In ticker thread with > 9 minute  elapsed time {0}".format(datetime.now()))
         return True
     return False
+
+if __name__ == "__main__":
+    start_ticker()

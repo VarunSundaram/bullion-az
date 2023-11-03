@@ -144,6 +144,18 @@ def create_instrument_file(lst_good_b_Instruments, lst_b_Instruments, lst_good_s
         
     upload_blob(constants.INSTRUMENTS)
 
+def get_session_token():
+    """
+    get kite session token
+    :return: api_key and access_token
+    :rtype: string
+    """
+    fp = os.path.join(constants.TEMPHERE, constants.ACCESS)
+    with open(fp, 'r') as f:
+        data = json.load(f)
+    
+    return data["api_key"], data["access_token"]
+
 def check_elapsed_time():
     stop = datetime.now()
     elapsed = stop - start_time
