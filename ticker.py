@@ -135,20 +135,20 @@ def start_ticker(api_key, access_token):
     # You have to use the pre-defined callbacks to manage subscriptions
     try:
         logging.info ('Connecting to kite ticker..')
-        kws.connect(threaded=True)
+        kws.connect()
         logging.info ("Threaded ticker has been initiated")
         #kws.connect()
         while True:
             time.sleep(1)
             if ut.check_elapsed_time():
-                ticker_inst = get_ticker_inst()
-                logging.info (ticker_inst)
                 if kws.is_connected:
+                    ticker_inst = get_ticker_inst()
+                    logging.info (ticker_inst)
                     kws.unsubscribe (ticker_inst)
+                    time.sleep(3)
+                    kws.close()
                 else:
                     logging.info ("Not connected any further so need not unsubscribe ")
-                time.sleep(3)
-                kws.close()
                 return
     except Exception as ex:
         logging.info ("Exception raised during kite.connect() as --" + str(ex))
