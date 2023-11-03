@@ -234,7 +234,10 @@ def start_session():
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
             logging.info ('going into ticker operation')
             result = subprocess.Popen(["python", "ticker.py"])
-            exit_code = result.wait()
+            exit_code = 1
+            while exit_code == 1:
+                exit_code = result.wait()
+                time.sleep(1)
             logging.info ("Exit Code of the subprocess wait.. " + str(exit_code))
         else:
             logging.info ('calculating bb again as Instruments not found')
