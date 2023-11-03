@@ -152,7 +152,7 @@ def start_ticker():
                     kws.close()
                 else:
                     logging.info ("Not connected any further so need not unsubscribe ")
-                return
+                return 0
     except Exception as ex:
         logging.info ("Exception raised during kite.connect() as --" + str(ex))
         raise (ex)
