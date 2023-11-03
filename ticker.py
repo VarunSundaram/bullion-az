@@ -135,7 +135,8 @@ def start_ticker(api_key, access_token):
     # You have to use the pre-defined callbacks to manage subscriptions
     try:
         logging.info ('Connecting to kite ticker..')
-        kws.connect()
+        kws.connect(threaded=True)
+        logging.info ("Threaded ticker has been initiated")
         #kws.connect()
         while True:
             time.sleep(1)
