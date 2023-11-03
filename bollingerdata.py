@@ -79,7 +79,12 @@ def check_movement(dayHistory, move_by):
     
     return low
 
-def calculateBB(kite, exchange):
+def calculateBB():
+    ut.start_time = datetime.now()
+    api_key, access_token = ut.get_session_token()
+    kite = KiteConnect(api_key=api_key, access_token=access_token)
+    
+    exchange = kite.EXCHANGE_NSE
     instruments = kite.instruments(exchange)
     basecandles = 164
     previousDay,currentDay = getDays(basecandles)
