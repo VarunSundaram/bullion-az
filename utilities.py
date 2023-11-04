@@ -1,4 +1,4 @@
-from azure.communication.email import EmailClient
+#from azure.communication.email import EmailClient
 from datetime import date, datetime, timedelta
 import os
 from constants import constants
@@ -13,7 +13,7 @@ start_time = ''
 def send_email(lst_good_b_instruments, lst_b_instruments, lst_good_s_instruments, lst_s_instruments):
     try:
         connection_string = "endpoint=https://loftynotification.india.communication.azure.com/;accesskey=ewnfBfxcc73nqA+epomtCv9qabIjD5WS9oZV86KO44KfJVlqemVp7s268eyBUWUCuVW3Uz+TOm7m3Om6/CacZw=="
-        client = EmailClient.from_connection_string(connection_string)
+        #client = EmailClient.from_connection_string(connection_string)
         
         subject = "Find data attached"
         
@@ -42,8 +42,8 @@ def send_email(lst_good_b_instruments, lst_b_instruments, lst_good_s_instruments
             }
         }
 
-        poller = client.begin_send(message)
-        result = poller.result()
+        #poller = client.begin_send(message)
+        #result = poller.result()
 
     except Exception as ex:
         print (ex)
