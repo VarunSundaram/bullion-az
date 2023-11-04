@@ -235,6 +235,8 @@ def start_session():
             logging.info ('going into ticker operation')
             output = subprocess.check_output(["python", "--version"], text=True)
             logging.info ("value return subprocess command.. " + str(output))
+            output = subprocess.check_output(["ls", "-l"], text=True)
+            logging.info ("value return subprocess command.. " + str(output))
             fp = os.path.join(os.curdir, "execute_ticker.sh")
             if os.path.isfile(fp):
                 logging.error ("Execute ticker shell file is not found ")
