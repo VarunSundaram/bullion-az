@@ -10,6 +10,12 @@ pip install datetime
 
 pip install azure-storage-blob
 
+echo "export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/b‌​in" >> ~/.bash_profile
+
+ls -l
+
+echo "export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/b‌​in" >> ~/.bashrc
+
 ls -l
 
 python ticker.py
