@@ -1,6 +1,7 @@
 from kiteconnect import KiteTicker
 from kiteconnect import KiteConnect
 
+import azure.functions as func
 import logging
 import os
 import random

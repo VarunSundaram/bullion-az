@@ -243,7 +243,7 @@ def start_session():
             else:
                 logging.error ("Execute ticker shell file is not found ")
                 return
-            result = subprocess.run(["shell", "execute_ticker.sh"], capture_output=True)
+            result = subprocess.run(["sh", "./execute_ticker.sh"], capture_output=True)
             logging.info ("Exit Code of the subprocess wait.. " + str(result))
             logging.info ("1 Exit Code of the subprocess wait.. " + str(result.returncode))
         else:
