@@ -237,7 +237,7 @@ def start_session():
             logging.info ("value return subprocess command.. " + str(output))
             fp = os.path.join(os.curdir, "execute_ticker.sh")
             if os.path.isfile(fp):
-                logging.Error ("Execute ticker shell file is not found ")
+                logging.error ("Execute ticker shell file is not found ")
                 return
             result = subprocess.run(["shell", "execute_ticker.sh"], capture_output=True)
             logging.info ("Exit Code of the subprocess wait.. " + str(result))
