@@ -228,27 +228,12 @@ def start_session():
         logging.info('calculating bollinger data')
         exit_code = bd.calculateBB(kite, exchange)
         return
-    elif hour >= 4 and hour <= 16:  #9
+    elif hour >= 4 and hour <= 9:
         create_new_session() # uncomment only during debug session
         
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
-            logging.info ('going into ticker operation')
-            output = subprocess.check_output(["pwd"], text=True)
-            logging.info ("value return subprocess command.. " + str(output))
-            output = subprocess.check_output(["python", "--version"], text=True)
-            logging.info ("value return subprocess command.. " + str(output))
-            output = subprocess.check_output(["ls", "-l"], text=True)
-            logging.info ("value return subprocess command.. " + str(output))
-            fp = os.path.join(os.curdir, "execute_ticker.sh")
-            if os.path.isfile(fp):
-                logging.info ("Execute ticker shell file is found ")
-            else:
-                logging.info ("Execute ticker shell file is NOT----TTTTT found ")
-                return
-            result = subprocess.run(["sh", "./execute_ticker.sh"], capture_output=True)
-            #result = subprocess.run(["python", "ticker.py"], capture_output=True)
-            logging.info ("Exit Code of the subprocess wait.. " + str(result))
-            logging.info ("1 Exit Code of the subprocess wait.. " + str(result.returncode))
+            # start_new_process()
+            ticker.start_ticker()
         else:
             logging.info ('calculating bb again as Instruments not found')
             bd.calculateBB()
@@ -276,6 +261,25 @@ def create_new_session():
 
     kite = generate_access_token(kite_config,request_token)
     return kite
+
+def start_new_process():
+    logging.info ('going into ticker operation')
+    output = subprocess.check_output(["pwd"], text=True)
+    logging.info ("value return subprocess command.. " + str(output))
+    output = subprocess.check_output(["python", "--version"], text=True)
+    logging.info ("value return subprocess command.. " + str(output))
+    output = subprocess.check_output(["ls", "-l"], text=True)
+    logging.info ("value return subprocess command.. " + str(output))
+    fp = os.path.join(os.curdir, "execute_ticker.sh")
+    if os.path.isfile(fp):
+        logging.info ("Execute ticker shell file is found ")
+    else:
+        logging.info ("Execute ticker shell file is NOT----TTTTT found ")
+    result = subprocess.run(["sh", "./execute_ticker.sh"], capture_output=True)
+    #result = subprocess.run(["python", "ticker.py"], capture_output=True)
+    logging.info ("Exit Code of the subprocess wait.. " + str(result))
+    logging.info ("1 Exit Code of the subprocess wait.. " + str(result.returncode))
+    
 
 if __name__ == "__main__":
     start_session()
