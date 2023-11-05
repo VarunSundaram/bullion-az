@@ -6,7 +6,7 @@ import positionaltrade as ps
 app = func.FunctionApp()
 
 #@app.schedule(schedule="0 */10 * * * *", arg_name="myTimer", run_on_startup=True,
-@app.schedule(schedule="0 0/15 * * * *", arg_name="myTimer", run_on_startup=True, #0 0/15 * * * 1-5
+@app.schedule(schedule="0 0/15 * * * 1-5", arg_name="myTimer", run_on_startup=True,
 #@app.schedule(schedule="0 0 3 * * 1-5", arg_name="myTimer", run_on_startup=True,
               use_monitor=False)
 def loftypts(myTimer: func.TimerRequest) -> None:
@@ -18,5 +18,5 @@ def loftypts(myTimer: func.TimerRequest) -> None:
 
     logging.info('Python timer trigger function ran at %s', utc_timestamp)
     hour = datetime.datetime.utcnow().hour
-    if hour >= 2 and hour <= 20:
+    if hour >= 3 and hour <= 20:
         ps.start_session()
