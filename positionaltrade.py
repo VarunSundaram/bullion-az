@@ -220,13 +220,16 @@ def start_session():
         return
     elif hour <= 3:
         if (ut.download_blob(constants.INSTRUMENTS) == 0):
+            minute = datetime.utcnow().minute
             logging.info('Instruments is already there')
+            if minute < 10:
+                logging.info('Instruments must be deleted and hence proceeding')
+                ut.delete_blob(constants.INSTRUMENTS)
             return
-        kite = create_new_session()
-        exchange = kite.EXCHANGE_NSE
+        create_new_session()
         
         logging.info('calculating bollinger data')
-        exit_code = bd.calculateBB(kite, exchange)
+        exit_code = bd.calculateBB()
         return
     elif hour >= 4 and hour <= 9:
         create_new_session() # uncomment only during debug session
