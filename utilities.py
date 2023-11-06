@@ -114,7 +114,9 @@ def download_blob(local_file_name = constants.ACCESS):
     container, blob_client = get_blob_client(local_file_name)
     
     if (blob_client.exists()):
-        logging.info('download blob name %s', local_file_name)
+        blob_properties = blob_client.get_blob_properties()
+        
+        logging.info('download blob name {0} which is created on {1}'.format(local_file_name, blob_properties.creation_time))
         bytes = blob_client.download_blob().readall()
         os.makedirs(os.path.dirname(download_file_path), exist_ok=True)
         with open(download_file_path, "wb") as file:
